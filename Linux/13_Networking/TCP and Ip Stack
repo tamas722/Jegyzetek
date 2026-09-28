@@ -1,0 +1,180 @@
+# TCP/IP és Hálózati Parancsok Linuxon
+
+A hálózati eszközök (és az internet) az IP (Internet Protocol) és a TCP/IP protokollcsalád segítségével kommunikálnak. A Linux operációs rendszerek számos olyan parancsot (IP command) tartalmaznak, amelyek lehetővé teszik a hálózati réteg konfigurálását, az IP-címek kiosztását, a forgalom irányítását (routing) és a hálózati biztonság (firewall) kezelését.
+
+Ezeknek a parancsoknak az ismerete elengedhetetlen a hálózatok diagnosztizálásához, konfigurálásához, a biztonság növeléséhez és a hálózati forgalom optimalizálásához.
+
+## 1. Hálózati Interfészek Kezelése
+
+A hálózati interfész (interface) a fizikai (pl. `eth0`, `enp3s0`) vagy virtuális (pl. `tun`, `tap`) hálózati kapcsolatokat jelképezi.
+
+A parancsok lehetővé teszik:
+
+- Az interfészek állapotának (MAC cím, sebesség, IP cím) megtekintését.
+- Az interfészek be- és kikapcsolását (up/down).
+- Speciális módok (pl. promiscuous mód) beállítását.
+
+## 2. IP Címek és Útválasztás (Routing) Kezelése
+
+**IP címek:**
+
+Az IP-címek egyedi azonosítóként szolgálnak. A parancsokkal statikus IP-címeket adhatunk hozzá vagy vehetünk el, kezelhetjük az elsődleges/másodlagos címeket, és lekérdezhetjük az ARP (Address Resolution Protocol) összerendeléseket.
+
+**Útválasztás (Routing):**
+
+A hálózati útválasztás határozza meg, hogy az adatcsomagok milyen útvonalon jussanak el a célig.
+
+Lehetőségek:
+
+- Alapértelmezett átjáró (default gateway) beállítása a külső forgalomhoz.
+- Statikus útvonalak hozzáadása/törlése adott IP tartományokhoz.
+- Dinamikus útvonalak és útválasztási metrikák finomhangolása a teljesítmény érdekében.
+
+## 3. Tűzfalak és Hozzáférés-szabályozás
+
+A hálózati forgalom szűréséért a tűzfalszabályok felelnek (Linuxon jellemzően az `iptables` vagy újabban az `nftables` révén).
+
+Lehetőségek:
+
+- Csomagok elfogadása (accept) vagy eldobása (reject/drop) IP-cím, protokoll vagy port alapján.
+- A hozzáférés korlátozása és a rosszindulatú forgalom blokkolása.
+
+## 4. A Leggyakoribb Linux TCP/IP Parancsok Listája
+
+Bár több mint 100 hálózati segédprogram létezik (ideértve a vezeték nélküli, Kubernetes, vagy automatizációs eszközöket is), a mindennapi adminisztrációhoz az alábbi 15-20 alapvető parancs a legfontosabb:
+
+| Parancs | Leírás |
+| --- | --- |
+| `ip` | A modern Linux disztribúciók legfőbb hálózati parancsa. Interfészek, IP-címek, útválasztás és alagutak kezelésére szolgál. (Leváltotta az `ifconfig`-ot). |
+| `ip addr` | IP-címek lekérdezése, hozzáadása és eltávolítása a hálózati interfészeken. |
+| `ip route` | Az IP útválasztási (routing) tábla megtekintése és módosítása, alapértelmezett átjáró és statikus útvonalak beállítása. |
+| `ip rule` | Útválasztási házirendek és szabályok (routing policy) kezelése. |
+| `ip neigh` | A szomszédsági tábla (ARP gyorsítótár) megtekintése és szerkesztése (IP és MAC cím összerendelések). |
+| `ifconfig` | Régebbi parancs az interfészek konfigurálására. Bár sok rendszeren még elérhető, ma már elavult (deprecated). |
+| `route` | Régebbi parancs az útválasztási tábla módosítására (az `ip route` elődje). |
+| `ping` | IP kapcsolat és elérhetőség tesztelése egy távoli géppel (ICMP protokoll segítségével). |
+| `traceroute` | Megmutatja azt a hálózati útvonalat (és ugrásokat/hop-okat), amelyet a csomagok bejárnak a távoli célig. |
+| `tracepath` | Hasonló a `traceroute`-hoz, de extra információkat is szolgáltat az IP csomagokról (pl. MTU felfedezés). |
+| `netstat` | Aktív IP hálózati kapcsolatok, útválasztási táblák és interfész-statisztikák megjelenítése. (Mára több disztribúcióban elavult). |
+| `ss` | Aktív IP socketek és hálózati kapcsolatok vizsgálata. (A `netstat` modern, gyorsabb helyettesítője). |
+| `dig` | DNS szerverek lekérdezése IP-címek feloldásához és DNS rekordok vizsgálatához. |
+| `iptables` | IP tűzfalszabályok konfigurálása a hálózati forgalom és a kapcsolatok szűrésére. |
+
+
+##Forrás
+-[https://whatismyipaddress.com/tcp-ip-commands-linux]
+
+# A `netstat` Parancs Linuxon (Hálózati Statisztikák és Portok)
+
+A `netstat` (network statistics) egy parancssori eszköz a hálózati aktivitás, a nyitott portok és a kiépült kapcsolatok lekérdezésére. Elengedhetetlen a hálózati hibaelhárításhoz.
+
+> ⚠️ **Megjegyzés:** Bár a `netstat` még mindig széles körben használt, technikailag elavultnak (obsolete) számít. A modern Linux rendszereken az `ss` parancs a javasolt, gyorsabb alternatíva. A `netstat` a `net-tools` csomag része, amelyet gyakran külön kell telepíteni.
+
+## 1. Alapszintaxis és a Kimenet Értelmezése
+
+Kapcsolók nélkül futtatva (`netstat`) a parancs megjeleníti az aktív hálózati kapcsolatokat és a Unix socketeket.
+
+### A) Aktív Internetes Kapcsolatok (Active internet connections) oszlopai:
+
+- **Proto:** A kapcsolat protokollja (pl. TCP, UDP).
+- **Recv-Q:** A fogadó sorban lévő, feldolgozásra váró bájtok száma.
+- **Send-Q:** A küldő sorban lévő, elküldésre váró bájtok száma.
+- **Local address:** A helyi IP-cím és port. (A `*` azt jelenti, hogy a szerver minden elérhető interfészen figyel).
+- **Foreign address:** A távoli (távoli gép) IP-címe és portja.
+- **State:** A helyi socket állapota (pl. `ESTABLISHED`, `LISTENING`, `CLOSED`, vagy üres).
+
+### B) Aktív Unix Domain Socketek (Active UNIX domain sockets) oszlopai:
+
+- **Proto:** Mindig `unix`.
+- **RefCnt:** Hivatkozásszám (a sockethez csatlakozó folyamatok száma).
+- **Flags:** Általában `ACC` vagy üres.
+- **Type:** A socket típusa.
+- **State:** Állapot (pl. `CONNECTED`, `LISTENING`).
+- **I-Node:** A sockethez tartozó fájlrendszerbeli index csomópont (inode).
+- **Path:** A socket fájlrendszerbeli elérési útja.
+
+## 2. A Legfontosabb Kapcsolók (Opciók)
+
+| Kapcsoló | Leírás |
+| --- | --- |
+| `-a` | Megjeleníti az összes aktív (TCP és UDP) kapcsolatot és figyelő portot. |
+| `-t` | Csak a TCP kapcsolatok megjelenítése. |
+| `-u` | Csak az UDP kapcsolatok megjelenítése. |
+| `-l` | Csak a bejövő kapcsolatokra figyelő (LISTENING) socketek mutatása. |
+| `-p` | Megjeleníti az adott sockethez tartozó Folyamatazonosítót (PID) és a program nevét. (Sokszor root jog kell hozzá). |
+| `-n` | Numerikus formátum. Nem próbálja meg a portokat és IP-címeket emberileg olvasható nevekké feloldani (gyorsabb). |
+| `-r` | Megjeleníti a kernel útválasztási tábláját (routing table). |
+| `-s` | Összesítő statisztikát ad protokollonként. |
+| `-c` | Folyamatosan (másodpercenként) frissíti a kimenetet. |
+| `-e` | Kiterjesztett információk (pl. időzítők, felhasználói azonosítók) megjelenítése. |
+
+## 3. Gyakorlati Példák (A 25 leghasznosabb `netstat` parancs)
+
+A parancsok és kapcsolók kombinálhatók (pl. `-t` és `-p` együttesen `-tp`).
+
+### Portok és Kapcsolatok Listázása
+
+- Összes port és kapcsolat (figyelő és kiépült): `netstat -a`
+- Összes TCP port: `netstat -at`
+- Összes UDP port: `netstat -au`
+
+### Figyelő (Listening) Portok Keresése
+
+- Csak a figyelő portok (minden protokoll): `netstat -l`
+- Figyelő TCP portok: `netstat -lt`
+- Figyelő UDP portok: `netstat -lu`
+- Figyelő UNIX portok/socketek: `netstat -lx`
+- Figyelő programok (PID-vel együtt): `sudo netstat -lp`
+
+### Folyamatok és PID azonosítása
+
+- TCP kapcsolatok a hozzájuk tartozó PID/Program névvel: `sudo netstat -tp`
+- Egy adott portot (pl. 80) használó folyamat megkeresése: `netstat -an | grep ':80'`
+
+### Hálózati Statisztikák (Protokollonként)
+
+- Általános statisztika minden protokollra: `netstat -s`
+- Csak TCP statisztikák: `netstat -st`
+- Csak UDP statisztikák: `netstat -su`
+
+### Hálózati Interfészek és Útválasztás (Routing)
+
+- Hálózati interfészek (MTU, RX/TX csomagok): `netstat -i`
+- Bővített interfész statisztika (hibaszámlálókkal): `netstat -ie`
+- Kernel IP útválasztási tábla (Routing table): `netstat -r`
+- IPv4 és IPv6 csoporttagságok (Multicast): `netstat -g`
+- Maszkolt (NAT / Masqueraded) kapcsolatok mutatása: `netstat -M`
+
+### Folyamatos Monitorozás (Real-time)
+
+- Információk másodpercenkénti frissítése: `netstat -c`
+- Interfész statisztikák folyamatos frissítése: `netstat -ic`
+
+### Névfeloldás letiltása (Numerikus kimenet - gyorsabb futás)
+
+(Az SSH porttovábbításnál vagy scriptelésnél fontos, hogy a rendszer ne cserélje le a portszámot a szolgáltatás nevére).
+
+21. Minden IP és port numerikusan: `netstat -n`
+22. Csak a hosztcímek numerikusan: `netstat --numeric-hosts`
+23. Csak a portok numerikusan: `netstat --numeric-ports`
+24. Felhasználói azonosítók (UID) numerikusan: `netstat --numeric-users`
+
+### Egyéb
+
+- Támogatás nélküli (konfigurálatlan) címcsaládok listázása: `netstat --verbose` (A kimenet végén található).
+- Segítség és az összes opció listázása: `netstat -h`
+
+## 4. Gyors Referencia (Cheatsheet) a Mindennapokra
+
+A mindennapi rendszergazdai feladatok során a leggyakrabban használt kombinációk:
+
+| Mit szeretnél látni? | Parancs | Magyarázat |
+| --- | --- | --- |
+| Melyik program hallgat ezen a porton? | `sudo netstat -tulpn` | TCP, UDP, Listening, PID, Numerikus. (Az egyik leghasznosabb kombináció!) |
+| Aktív kapcsolatok keresése egy IP-vel | `netstat -anp \| grep IP_CÍM` | Megkeresi a kiépült kapcsolatokat a megadott távoli IP-vel. |
+| Hálózati kártyák hibáinak ellenőrzése | `netstat -ie` | Dropped vagy Error csomagok keresése az interfészeken. |
+| Routing tábla megtekintése DNS feloldás nélkül | `netstat -rn` | Azonnal kiírja a routing táblát (hasonló a `route -n` parancshoz). |
+
+##Forrás:
+-[https://phoenixnap.com/kb/netstat-command
+-[https://linuxhandbook.com/netstat-command/]
