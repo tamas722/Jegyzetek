@@ -40,3 +40,32 @@ Mi történik pontosan, amikor kiadod a `docker run nginx` parancsot?
 4. **Példányosítás:** A démon létrehoz egy új konténert a kép alapján (hozzáad egy írható réteget a tetejére).
 5. **Erőforrások allokálása:** Létrehozza a szükséges hálózati interfészeket, beköti (mount) a kért köteteket (volumes), és meghatározza az IP-címet.
 6. **Indítás:** A démon utasítja a `containerd`-t, hogy a `runc` segítségével ténylegesen indítsa el a folyamatot (process) a kernellel elkülönítve, és összeköti a standard kimeneteket (STDOUT, STDERR) a klienssel.
+
+# Docker alapok
+
+A Docker egy platform, amely leegyszerűsíti az alkalmazások építését, csomagolását és telepítését könnyűsúlyú, hordozható konténerekben. A kulcskomponensek közé tartoznak a Dockerfile-ok (építési utasítások), a képek (image-ek, pillanatképek) és a konténerek (futó példányok). A lényeges parancsok lefedik a képek letöltését, a Dockerfile-okból való építést, a konténerek futtatását porttérképezéssel, valamint a konténerek és képek kezelését.
+
+## Mi az a konténer?
+
+A konténer egy könnyűsúlyú, önálló és futtatható szoftvercsomag, amely tartalmazza az összes függőséget (könyvtárakat, binárisokat és konfigurációs fájlokat), amelyek egy alkalmazás futtatásához szükségesek. A konténerek elkülönítik az alkalmazásokat a környezetüktől, biztosítva, hogy azok egységesen működjenek a különböző rendszereken.
+
+## Docker komponensek
+
+Három kulcskomponens van a Docker ökoszisztémában:
+
+- **Dockerfile:** Egy szöveges fájl, amely utasításokat (parancsokat) tartalmaz egy Docker image építéséhez.
+- **Docker Image (kép):** Egy konténer pillanatképe, amelyet egy Dockerfile-ból hoznak létre. A képek egy regisztrumban (registry) vannak tárolva, mint például a Docker Hub, és le lehet tölteni (pull) vagy fel lehet tölteni (push) a regisztrumba.
+- **Docker Container (konténer):** Egy Docker image futó példánya.
+
+## Docker parancsok
+
+Íme néhány alapvető Docker parancs, amelyeket gyakran fogsz használni:
+
+- `docker pull <image>`: Egy image letöltése egy regisztrumból, például a Docker Hubról.
+- `docker build -t <image_name> <path>`: Egy image építése egy Dockerfile-ból, ahol a `<path>` a Dockerfile-t tartalmazó könyvtár.
+- `docker image ls`: Az összes helyi gépen elérhető image listázása.
+- `docker run -d -p <host_port>:<container_port> --name <container_name> <image>`: Egy konténer futtatása egy image-ből, a host portok a konténer portjaihoz rendelése.
+- `docker container ls`: Az összes futó konténer listázása.
+- `docker container stop <container>`: Egy futó konténer leállítása.
+- `docker container rm <container>`: Egy leállított konténer eltávolítása.
+- `docker image rm <image>`: Egy image eltávolítása a helyi gépről.
