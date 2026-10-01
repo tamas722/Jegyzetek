@@ -62,3 +62,8 @@ Lebegő (floating) mód be/kikapcsolása. Ha egy ablakot teljes képernyőre rak
 - **Alt + 9**: Ugrás a legutolsó (legjobb oldali) lapra, függetlenül attól, hány darab van nyitva.
 - **Ctrl + L**: A fenti URL (kereső) sáv azonnali kijelölése. Ha új weboldalt akarsz megnyitni vagy keresni valamit a Google-ben, nem kell az egérrel odavinned a kurzort, csak megnyomod ezt, és egyből gépelhetsz.
 - **F5 vagy Ctrl + R**: Az aktuális oldal frissítése.
+
+
+## Alvó mód
+ - **sudo systemctl restart NetworkManager**: Ha alvómodból visszatére nem menne a net
+ - **hyprctl dispatch dpms off && hyprctl dispatch dpms on**: Ha alvómodból visszatérve a második monitor le van fagyva
