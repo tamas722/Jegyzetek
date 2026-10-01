@@ -67,3 +67,33 @@ Lebegő (floating) mód be/kikapcsolása. Ha egy ablakot teljes képernyőre rak
 ## Alvó mód
  - **sudo systemctl restart NetworkManager**: Ha alvómodból visszatére nem menne a net
  - **hyprctl dispatch dpms off && hyprctl dispatch dpms on**: Ha alvómodból visszatérve a második monitor le van fagyva
+
+   # VS Code – Sorok másolása és villámgyors szerkesztés
+
+VS Code alatt nem szükséges semmit kijelölni egy sor másolásához vagy mozgatásához; elég, ha a kurzor valahol a sorban áll.
+
+- **Alt + Shift + Le / Fel**: Az aktuális sor azonnali lemásolása és beillesztése közvetlenül alá vagy fölé. (Ez a leggyorsabb módja egy sor megkettőzésének egér nélkül).
+- **Ctrl + C (kijelölés nélkül)**: Ha nincs semmi kijelölve, a VS Code automatikusan az egész sort kimásolja a vágólapra, amin a kurzor épp áll. Egy Ctrl + V-vel bárhová beilleszthető egy új sorba.
+- **Alt + Fel / Le**: Az aktuális sor (vagy kijelölt blokk) fizikai fel-le mozgatása a kódban anélkül, hogy ki kellene vágni és beilleszteni.
+- **Ctrl + Shift + K**: Az aktuális sor azonnali törlése.
+- **Ctrl + D**: A kurzor alatti szó kijelölése. Ha többször nyomod meg egymás után, megtalálja és kijelöli a szó következő előfordulásait is (multi-cursor), így egyszerre több helyen írhatsz át egy változót.
+- **Ctrl + Enter**: Új üres sor beszúrása közvetlenül a jelenlegi sor alá úgy, hogy a kurzor egyből oda ugrik (nem kell a sor végére navigálni az Enter előtt).
+- **Ctrl + P**: Villámgyors fájlkereső. Elkezded beírni egy fájl nevét a projektben, Enter, és azonnal megnyílik.
+
+## Terminál (Fish / Kitty) – Navigáció és kijelölésmentes vágólap
+
+Grafikus terminálban az egész sor kimásolása a beépített parancssori vágólappal (kill-ring) a legkényelmesebb.
+
+- **Ctrl + U**: A teljes parancssor azonnali kivágása. A szöveget eltünteti a képernyőről, de egy belső pufferbe menti.
+- **Ctrl + Y**: Az előzőleg kivágott sor vagy szavak azonnali visszabeillesztése (Yank). Ha a fenti kettőt kombinálod (Ctrl + U majd rögtön Ctrl + Y), a sor a helyén marad, de már a terminál belső vágólapján van.
+- **Ctrl + Shift + C és Ctrl + Shift + V**: A Linux terminálokban a sima másolás/beillesztés nem Ctrl + C / V (mivel a Ctrl+C a futó program leállítására szolgál), hanem mindig a Shift hozzáadásával működik.
+- **Alt + Backspace vagy Ctrl + W**: Az előző szó törlése/kivágása.
+- **Alt + D**: A következő szó törlése a kurzortól jobbra.
+- **Alt + T**: Az aktuális és az előtte lévő szó azonnali felcserélése (hasznos, ha elgépelsz egy sorrendet, pl. docker run argumentumoknál).
+
+## Kitty – Szövegmásolás a kimenetből egér nélkül
+
+Ha a terminálba kiírt szövegből (pl. hibaüzenetből vagy egy IP-címből) kell kimásolnod egy részletet egér nélkül, a Kitty beépített képességeit érdemes használni:
+
+- **Ctrl + Shift + P > F**: Rákényszeríti a Kitty-t, hogy megkeresse az összes fájlnevet vagy útvonalat a képernyőn, betűcímkét tesz melléjük (mint a Vimium a böngészőben), és a betű leütésével a vágólapra másolja.
+- **Ctrl + Shift + H**: A teljes terminál előzmény megnyitása egy lapozható nézetben, ahol billentyűzettel mozoghatsz a korábbi kimenetek sorai között.
