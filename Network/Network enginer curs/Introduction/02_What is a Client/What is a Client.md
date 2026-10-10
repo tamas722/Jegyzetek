@@ -14,9 +14,6 @@ A szerverek jellemzően olyan erőforrásokat biztosítanak, mint fájlok, adato
 
 A kliensek és a szerverek egy kérés-válasz üzenetküldési mintában kommunikálnak, amelyet egy kommunikációs protokoll határoz meg, például a Transmission Control Protocol/Internet Protocol (TCP/IP). A protokoll határozza meg a használt nyelvet és párbeszédmintákat. A TCP például fenntartja a kapcsolatot a kliens és a szerver között az üzenetváltás végéig. A TCP azt is meghatározza, hogyan ossza el az alkalmazásadatokat, továbbítja és fogadja a csomagokat, valamint kezeli az esetlegesen elveszett csomagokat. Ha a szerver egyszerre nagy számú kérést kap, a kéréseket egy ütemezési rendszerben prioritás alapján rendezik. A kliens hozzáférés-vezérlő eszközökkel a felhasználó kezelheti a szerverekhez való hozzáférést.
 
-### Kérés és válasz a kliens és a szerver között
-
-Ez a kép egy egyszerűsített kérés- és válaszfolyamatot mutat be a kliens és a szerver között.
 
 ## Kliensoldali vs. szerveroldali
 
