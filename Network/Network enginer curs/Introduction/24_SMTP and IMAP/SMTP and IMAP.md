@@ -1,78 +1,97 @@
-What are Email Protocols (POP3, SMTP and IMAP) and their default ports?
-Summarize this article with:
-Last update: Sep 03, 2025
-•
-3 min read
-Email is an essential part of business and personal communication online. The email protocols define the mechanism of the email exchange between servers and clients. This way, they allow us to send and receive messages over the network correctly.
+# Mik az e-mail protokollok (POP3, SMTP és IMAP) és az alapértelmezett portjaik?
 
-In this article, you will find the most common Email protocols explained – POP3, IMAP, and SMTP. Each of them has a specific function and mechanism. Read on to see which configuration will best serve your particular email needs.
+**Utolsó frissítés: 2025. szeptember 3.**
+• 3 perc olvasás
 
-What are Email Protocols?
-Email protocols are sets of rules that govern how emails are sent, received, and stored. The main protocols are SMTP for sending emails, and POP3 and IMAP for receiving emails. SMTP handles email transmission between servers, while POP3 downloads emails to a device and IMAP synchronizes emails across multiple devices.
+Az e-mail a vállalati és személyes online kommunikáció elengedhetetlen része. Az e-mail protokollok határozzák meg a szerverek és kliensek közötti e-mail-csere mechanizmusát. Így teszik lehetővé, hogy helyesen küldjünk és fogadjunk üzeneteket a hálózaton.
 
-Email protocols list
-The standard email protocol list includes:
+Ebben a cikkben megtalálod a leggyakoribb e-mail protokollok magyarázatát – POP3, IMAP és SMTP. Mindegyiküknek sajátos funkciója és mechanizmusa van. Olvass tovább, hogy megtudd, melyik konfiguráció szolgálja legjobban a konkrét e-mail igényeidet.
 
-SMTP
-POP3
-IMAP
-Each of them operates differently and provides a different service for managing your email account.
+## Mik az e-mail protokollok?
 
-What is SMTP?
-SMTP stands for Simple Mail Transfer Protocol, and it is responsible for sending email messages. This protocol is used by email clients and mail servers to exchange emails between computers.
+Az e-mail protokollok olyan szabályrendszerek, amelyek meghatározzák, hogyan küldik, fogadják és tárolják az e-maileket. A fő protokollok az **SMTP** az e-mailek küldéséhez, valamint a **POP3** és az **IMAP** az e-mailek fogadásához. Az SMTP kezeli az e-mail továbbítását a szerverek között, míg a POP3 letölti az e-maileket egy eszközre, és az IMAP szinkronizálja az e-maileket több eszköz között.
 
-How the email protocol SMTP works?
-A mail client and the SMTP server communicate with each other over a connection established through a particular email port. Both entities are using SMTP commands and replies to process your outgoing emails. Thanks to the Simple Mail Transfer Protocol, messages can be sent from the same account on different email applications.
+### E-mail protokollok listája
 
-What is POP3?
-How email protocol POP3 works?
-The POP3 abbreviation stands for Post Office Protocol version 3, which provides access to an inbox stored in an email server. It executes the download and deletes operations for messages. Thus, when a POP3 client connects to the mail server, it retrieves all messages from the mailbox. Then it stores them on your local computer and deletes them from the remote server.
+A szabványos e-mail protokollok listája a következőket tartalmazza:
 
-Thanks to this protocol, you are able to access the messages locally in offline mode as well.
+- SMTP
+- POP3
+- IMAP
 
-Modern POP3 clients allow you to keep a copy of your messages on the server if you explicitly select this option.
+Mindegyikük másképp működik, és különböző szolgáltatást nyújt az e-mail fiókod kezeléséhez.
 
-What is IMAP?
-How the email protocol IMAP works?
-The Internet Message Access Protocol (IMAP) allows you to access and manage your email messages on the email server. This protocol permits you to manipulate folders, permanently delete and efficiently search through messages. It also gives you the option to set or remove email flags, or fetch email attributes selectively. By default, all messages remain on the server until the user specifically deletes them.
+## Mi az SMTP?
 
-IMAP supports the connection of multiple users to a single mail server.
+Az **SMTP** a **Simple Mail Transfer Protocol** rövidítése, és felelős az e-mail üzenetek küldéséért. Ezt a protokollt e-mail kliensek és levelezőszerverek használják e-mailek cseréjére a számítógépek között.
 
-Default email ports
-Email ports are communication endpoints that define how a message should be transmitted. That includes whether a message should be encrypted and exchanged securely.
+### Hogyan működik az SMTP e-mail protokoll?
 
-To establish a connection between your email client and your mail server, you need the latter’s IP address and a port number. These attributes are assigned by IANA (Internet Assigned Numbers Authority).
+Egy levelezőkliens és az SMTP szerver egy adott e-mail porton keresztül létesített kapcsolaton kommunikál egymással. Mindkét entitás SMTP parancsokat és válaszokat használ a kimenő e-mailek feldolgozásához. A Simple Mail Transfer Protocolnak köszönhetően az üzenetek ugyanarról a fiókról különböző e-mail alkalmazásokban küldhetők.
 
-Each protocol has its own port numbers to connect through and each port supports a different type of encryption.
+## Mi a POP3?
 
-SMTP Ports
-The available SMTP ports are four and each of them underlies a different type of encryption for email sending.
+### Hogyan működik a POP3 e-mail protokoll?
 
-25 – This port serves to send messages in plain text, although if the mail server supports it, it can be encrypted with TLS. Therefore, many Internet service providers block it, as it represents a security risk.
-Port 2525 is an alternative to the SMTP port 25 and can be encrypted over TLS.
-587 – This is the port IANA registered as the secure SMTP port, and it requires an explicit TLS connection. However, if the email server does not support TLS, the message will be sent in plain text.
-Port 465 works over an implicit SSL connection and if the server does not support it, the operation will be aborted.
-POP3 ports
-Port 110 is the default POP3 port and it is not encrypted.
-The encrypted port for POP3 is 995 and works over TLS/SSL.
-IMAP ports
-By default IMAP works on two ports like POP3:
+A **POP3** rövidítés a **Post Office Protocol version 3**-at jelenti, amely hozzáférést biztosít egy e-mail szerveren tárolt beérkező postafiókhoz. Végrehajtja az üzenetek letöltési és törlési műveleteit. Így amikor egy POP3 kliens csatlakozik a levelezőszerverhez, letölti az összes üzenetet a postafiókból. Ezután a helyi számítógépeden tárolja őket, és törli azokat a távoli szerverről.
 
-143 – this is the default port which does not provide any encryption.
-Port 993 is the secure port for IMAP and it works over TLS/SSL encryption.
-What is the difference between SMTP, POP3, and IMAP?
-Incoming vs. outgoing protocols
-POP3 and IMAP are handling the incoming emails and they operate in different ways to retrieve or access your email messages. Thus, they are considered mail access protocols.
+Ennek a protokollnak köszönhetően offline módban is hozzáférhetsz az üzenetekhez helyben.
 
-On the other hand, the Simple Mail Transfer Protocol is behind the message transfer from server to server, or mail client to server. As this is the protocol handling the email sending from an email account, it is labeled as the outgoing protocol.
+A modern POP3 kliensek lehetővé teszik, hogy megőrizd az üzeneteid másolatát a szerveren, ha kifejezetten ezt a beállítást választod.
 
-In short, thanks to IMAP and POP3, you are able to receive emails, and SMTP allows you to send messages.
+## Mi az IMAP?
 
-IMAP vs. POP3
-As we already mentioned, both of these protocols relate to email retrieval. All modern servers support both protocols, although they function in different manners.
+### Hogyan működik az IMAP e-mail protokoll?
 
-While the POP3 protocol assumes that your email is being accessed only from one application, IMAP allows simultaneous access by multiple clients. This is why IMAP is more suitable for you, if you’re going to access your email from different locations or if multiple users manage your messages.
+Az **Internet Message Access Protocol (IMAP)** lehetővé teszi az e-mail üzeneteid elérését és kezelését az e-mail szerveren. Ez a protokoll lehetővé teszi mappák manipulálását, végleges törlést és hatékony keresést az üzenetek között. Lehetőséget ad e-mail jelzők beállítására vagy eltávolítására, vagy az e-mail attribútumok szelektív lekérésére. Alapértelmezés szerint minden üzenet a szerveren marad, amíg a felhasználó kifejezetten nem törli azokat.
 
-On the other hand, POP3 downloads your emails to your local computer, deleting them from the server. Thus, it reduces the space your email account uses on your web server.
+Az IMAP támogatja több felhasználó csatlakozását egyetlen levelezőszerverhez.
 
-To sum it up, there are 3 email protocols – SMTP, POP3, and IMAP. Each of them works on specific port numbers and operates differently. If you are having trouble connecting to an incoming or outgoing server, try using an alternative port number.
+## Alapértelmezett e-mail portok
+
+Az e-mail portok olyan kommunikációs végpontok, amelyek meghatározzák, hogyan kell egy üzenetet továbbítani. Ez magában foglalja, hogy az üzenetet titkosítani kell-e és biztonságosan kell-e cserélni.
+
+Az e-mail kliensed és a levelezőszervered közötti kapcsolat létrehozásához szükséged van az utóbbi IP-címére és egy portszámra. Ezeket az attribútumokat az IANA (Internet Assigned Numbers Authority) osztja ki.
+
+Minden protokollnak megvannak a saját portszámai a csatlakozáshoz, és minden port más típusú titkosítást támogat.
+
+### SMTP portok
+
+A rendelkezésre álló SMTP portok száma négy, és mindegyikük más típusú titkosítást biztosít az e-mail küldéshez.
+
+- **25** – Ez a port az üzenetek nyílt szövegben történő küldését szolgálja, bár ha a levelezőszerver támogatja, TLS-sel titkosítható. Ezért sok internetszolgáltató blokkolja, mivel biztonsági kockázatot jelent.
+- **2525** – Ez a 25-ös SMTP port alternatívája, és TLS-en keresztül titkosítható.
+- **587** – Ez az a port, amelyet az IANA a biztonságos SMTP portként regisztrált, és explicit TLS kapcsolatot igényel. Ha azonban az e-mail szerver nem támogatja a TLS-t, az üzenet nyílt szövegben kerül elküldésre.
+- **465** – Ez a port implicit SSL kapcsolaton keresztül működik, és ha a szerver nem támogatja, a művelet megszakad.
+
+### POP3 portok
+
+- A **110-es port** az alapértelmezett POP3 port, és nem titkosított.
+- A POP3 titkosított portja a **995-ös**, amely TLS/SSL felett működik.
+
+### IMAP portok
+
+Alapértelmezés szerint az IMAP két porton működik, akárcsak a POP3:
+
+- **143** – ez az alapértelmezett port, amely nem biztosít titkosítást.
+- A **993-as port** az IMAP biztonságos portja, amely TLS/SSL titkosításon keresztül működik.
+
+## Mi a különbség az SMTP, a POP3 és az IMAP között?
+
+### Bejövő vs. kimenő protokollok
+
+A POP3 és az IMAP a bejövő e-maileket kezeli, és különböző módon működnek az e-mail üzeneteid lekéréséhez vagy eléréséhez. Így ezeket levelezés-elérési protokolloknak tekintik.
+
+Másrészt a Simple Mail Transfer Protocol áll az üzenetek szerverről szerverre, vagy levelezőkliensről szerverre történő továbbítása mögött. Mivel ez a protokoll kezeli az e-mail küldését egy e-mail fiókból, kimenő protokollnak van címkézve.
+
+Röviden, az IMAP-nak és a POP3-nak köszönhetően képes vagy fogadni e-maileket, az SMTP pedig lehetővé teszi az üzenetek küldését.
+
+### IMAP vs. POP3
+
+Ahogy már említettük, mindkét protokoll az e-mail lekéréséhez kapcsolódik. Minden modern szerver támogatja mindkét protokollt, bár különböző módon működnek.
+
+Míg a POP3 protokoll feltételezi, hogy az e-mailjeidet csak egy alkalmazásból éred el, az IMAP lehetővé teszi több kliens egyidejű hozzáférését. Ezért az IMAP alkalmasabb számodra, ha különböző helyekről szeretnéd elérni az e-mailjeidet, vagy ha több felhasználó kezeli az üzeneteidet.
+
+Másrészt a POP3 letölti az e-mailjeidet a helyi számítógépedre, törölve azokat a szerverről. Így csökkenti az e-mail fiókod által a webszervereden használt helyet.
+
+Összefoglalva, három e-mail protokoll létezik – SMTP, POP3 és IMAP. Mindegyikük meghatározott portszámokon működik, és különböző módon működik. Ha problémád van egy bejövő vagy kimenő szerverhez való csatlakozással, próbálj meg alternatív portszámot használni.
