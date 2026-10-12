@@ -195,21 +195,41 @@ Router(config)# no service password-encryption
 
 **1. Milyen kábelt használunk ahhoz, hogy csatlakozzunk egy Cisco eszköz RJ45-ös konzol portjához?**
 
+- **A)** rollover cable (gördülő kábel)
+- **B)** crossover cable (keresztkötésű kábel)
+- **C)** USB cable (USB kábel)
+
 > **Helyes válasz:** Rollover kábel. (A crossover kábel két azonos hálózati eszköz összekötésére való, az USB kábel pedig az USB konzol porthoz kell, nem az RJ45-öshöz).
 
 **2. Beírod az `enable` parancsot a Privileged EXEC módba lépéshez, de a megadott jelszót nem fogadja el a gép. Mi lehet a probléma?**
+
+- **A)** A service password-encryption parancs be van kapcsolva.
+- **B)** A service password-encryption parancs ki van kapcsolva
+- **C)** A Caps Lock be van kapcsolva a billentyűzeteden.
 
 > **Helyes válasz:** Be van kapcsolva a Caps Lock. (A jelszavak kis- és nagybetű érzékenyek! A `service password-encryption` állapota nem számít, mert az csak a mentett szöveg megjelenését befolyásolja, magát a jelszót nem).
 
 **3. Mi a legbiztonságosabb módszer a Privileged EXEC mód jelszavas védelmére?**
 
+- **A)** Az enable secret parancs.
+- **B)** Az enable password parancs.
+- **C)** Az enable password parancs a service password-encryption bekapcsolásával.
+
 > **Helyes válasz:** Az `enable secret` parancs. (Ez sokkal erősebb, MD5 / Type 5 szintű titkosítást használ, mint az `enable password` még akkor is, ha ez utóbbi mellé be van kapcsolva a `service password-encryption`).
 
 **4. Mi történik az `enable` parancs kiadásakor, ha az `enable password` és az `enable secret` is be van állítva a routeren?**
 
+- **A)** Először az enable password jelszót kell beírnod, majd azt követően az enable secret jelszót.
+- **B)** Kizárólag az enable password jelszót kell megadnod.
+- **C)** Kizárólag az enable secret jelszót kell megadnod
+
 > **Helyes válasz:** Csak az `enable secret` jelszavát kell megadni. (A titkos (secret) jelszó mindig felülbírálja és érvényteleníti a sima jelszót, soha nem kéri be a rendszer mindkettőt).
 
 **5. A `conf t` paranccsal lépsz be a globális konfigurációs módba. Mi ennek a parancsnak a teljes hossza?**
+
+- **A)** configuration time
+- **B)** configure terminal
+- **C)** configuration terminal
 
 > **Helyes válasz:** `configure terminal`.
 
