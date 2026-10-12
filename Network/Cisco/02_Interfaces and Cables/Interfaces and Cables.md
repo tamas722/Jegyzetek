@@ -1,6 +1,6 @@
 # Teljes CCNA Tanfolyam – 2. Lecke: Interfészek és Kábelek (Interfaces and Cables)
 
-Üdvözöllek a teljes CCNA tanfolyamon, ez a Jeremy's IT Lab. A cél, hogy ez egy hiánytalan, 100%-ban ingyenes CCNA kurzus legyen, amely mindent tartalmaz a vizsga sikeres letételéhez. Az előző leckében a hálózatokban található különböző eszközökről volt szó. Ebben a leckében arra fókuszálunk, hogyan kötjük össze őket – egészen pontosan a kábelekkel. (A vezeték nélküli kapcsolatokkal a kurzus egy későbbi pontján foglalkozunk majd.)
+Üdvözöllek a teljes CCNA tanfolyamon. Az előző leckében a hálózatokban található különböző eszközökről volt szó. Ebben a leckében arra fókuszálunk, hogyan kötjük össze őket – egészen pontosan a kábelekkel. (A vezeték nélküli kapcsolatokkal a kurzus egy későbbi pontján foglalkozunk majd.)
 
 ## Interfészek és az RJ-45 Csatlakozó
 
