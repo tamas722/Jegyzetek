@@ -105,6 +105,15 @@ A kábel szerkezete belülről kifelé:
 
 (Fontosabb optikai szabványok: 1000BASE-LX (1 Gbps, 550m multimode vagy 5km single-mode), 10GBASE-SR (10 Gbps, max 400m multimode), 10GBASE-LR (10 Gbps, max 10km single-mode), 10GBASE-ER (10 Gbps, max 30km single-mode).)
 
+## Száloptikás (Fiber-Optic) Kábel Szabványok
+
+| Sebesség | Közismert név | IEEE Szabvány | Kábeltípus | Max. kábelhossz |
+|----------|---------------|---------------|------------|-----------------|
+| 1 Gbps | 1000BASE-LX | 802.3z | Multimode / Single-mode fiber | 550 méter (multimode) / 5 kilométer (single-mode) |
+| 10 Gbps | 10GBASE-SR | 802.3ae | Multimode fiber | 400 méter |
+| 10 Gbps | 10GBASE-LR | 802.3ae | Single-mode fiber | 10 kilométer |
+| 10 Gbps | 10GBASE-ER | 802.3ae | Single-mode fiber | 30 kilométer |
+
 ## UTP vs. Fiber-Optic Összegzés
 
 | Szempont | UTP (Réz) | Fiber-Optic (Száloptika) |
