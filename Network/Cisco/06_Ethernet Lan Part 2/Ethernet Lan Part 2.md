@@ -37,10 +37,16 @@ Az ARP egy hálózati nyomozó protokoll. Az a feladata, hogy megkeresse a hián
 
 Mivel a PC1 nem tudja, kinek kell küldeni a kérdést (hiszen pont a MAC-címet nem ismeri), a kérdést mindenkinek felteszi a helyi hálózaton. Ezt hívják Broadcast (üzennetszóró) keretnek.
 
-- **Küldő IP:** PC1 (Saját IP-je)
-- **Cél IP:** PC3 (Keresett IP-je)
-- **Küldő MAC:** PC1 (Saját MAC-címe)
-- **Cél MAC:** `FFFF.FFFF.FFFF` (Ez a speciális broadcast MAC-cím azt jelenti: "Mindenki a hálózaton!")
+### ARP Request – A csomag címei
+
+| Mező | Érték | Jelentés |
+|---|---|---|
+| **Küldő IP** | PC1 | Saját IP-je |
+| **Cél IP** | PC3 | Keresett IP-je |
+| **Küldő MAC** | PC1 | Saját MAC-címe |
+| **Cél MAC** | `FFFF.FFFF.FFFF` | Speciális broadcast MAC-cím: "Mindenki a hálózaton!" |
+
+### ARP Request – Mi történik a hálózaton?
 
 - A keret Cél MAC-címe egy speciális cím: `FFFF.FFFF.FFFF`. Ez a switchek nyelvén azt jelenti: "Ezt mindenkinek küldd el!"
 - A csomag belsejében ez az üzenet áll: "Kihez tartozik a `192.168.1.3`-as IP-cím? Mondja meg nekem a `192.168.1.1`-nek!"
@@ -51,10 +57,16 @@ Mivel a PC1 nem tudja, kinek kell küldeni a kérdést (hiszen pont a MAC-címet
 
 A PC3 megkapja a kérést, és felismeri a saját IP-címét! Összeállítja a választ.
 
-- **Küldő IP:** PC3
-- **Cél IP:** PC1
-- **Küldő MAC:** PC3 (Végre elküldi a keresett címet!)
-- **Cél MAC:** PC1
+### ARP Reply – A csomag címei
+
+| Mező | Érték | Jelentés |
+|---|---|---|
+| **Küldő IP** | PC3 | Saját IP-je |
+| **Cél IP** | PC1 | A kérdező IP-je |
+| **Küldő MAC** | PC3 | Végre elküldi a keresett címet! |
+| **Cél MAC** | PC1 | A kérdező MAC-címe (már ismert az ARP kérésből) |
+
+### ARP Reply – Mi történik a hálózaton?
 
 - Mivel az ARP kérésben benne volt PC1 MAC-címe, PC3-nak már nem kell kiabálnia. Egy célzott **Unicast** keretet küld egyenesen PC1-nek.
 - Az üzenet tartalma: "A `192.168.1.3`-as IP-cím az enyém, és a MAC-címem a következő..."
