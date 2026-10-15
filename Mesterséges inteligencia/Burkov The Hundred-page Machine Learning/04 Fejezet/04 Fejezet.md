@@ -127,3 +127,85 @@ Erre találták ki a következő kiegészítőket:
 - **Stochastic Gradient Descent (SGD):** Nem nézi végig a teljes adathalmazt egy lépéshez, csak egy apró véletlenszerű mintát (batch). Kicsit cikk-cakkosan halad a völgy felé, de nagyságrendekkel gyorsabb.
 - **Adagrad / RMSprop:** Ezek az algoritmusok automatikusan állítgatják a lépésközt ($\alpha$) a futás során.
 - **Momentum:** Eltárolja a korábbi mozgás "lendületét". A legnépszerűbb modern ötvözet minderre az **Adam** optimalizáló.
+
+
+## 4.3 Hogyan dolgoznak a gépi tanulás mérnökei a gyakorlatban?
+
+Hacsak nem vagy egy egyetemi kutató, vagy nem dolgozol egy gigászi tech-cég (Google, Meta) K+F (R&D) részlegénél óriási büdzsével, soha nem fogsz saját magad implementálni gradiens ereszkedést vagy SVM egyenletrendszert.
+
+A gépi tanulás mérnökei (Machine Learning Engineers) **szoftverkönyvtárakat** (libraries) használnak. Ezek nyílt forráskódú, professzionális szoftvercsomagok, amelyeket matematikusok és C/C++ programozók hada optimalizált a maximális stabilitásra és sebességre.
+
+A legnépszerűbb, ipari sztenderd könyvtár a klasszikus gépi tanulásra a **Scikit-Learn** (Pythonban és C-ben írva).
+
+### A Scikit-Learn csodája (Python kód)
+
+Emlékszel, az előző részben írtunk egy saját `train` függvényt gradiens ereszkedéssel, amihez több sornyi bonyolult matekot kellett leprogramozni. Nézd meg, hogyan néz ki ugyanez a feladat a Scikit-Learn használatával:
+
+```python
+# Importáljuk a beépített Lineáris Regresszió algoritmust
+from sklearn.linear_model import LinearRegression
+
+def train(x, y):
+    # Létrehozzuk a modellt, és a .fit() függvénnyel azonnal betanítjuk az adatokon
+    model = LinearRegression().fit(x, y)
+    return model
+
+# 1. Betanítjuk a modellt a meglévő adatokon
+model = train(x, y)
+
+# 2. Bejön egy új adat (egy vállalat, ami 23.0 millió dollárt költött reklámra)
+x_new = [[23.0]]  # (A scikit-learn mátrixokat vár, ezért a dupla zárójel)
+
+# 3. Kérünk egy predikciót a betanított modelltől
+y_new = model.predict(x_new)
+print(y_new)
+```
+
+**Az eredmény:** A kód pontosan `13.97`-et fog kiköpni, hajszálpontosan ugyanúgy, mintha te írtad volna meg a gradiens ereszkedést.
+
+**Mi ebben a zseniális?** A Scikit-Learn API-ja (felülete) annyira egységes, hogy ha hirtelen rájössz, hogy a Lineáris Regresszió helyett egy kNN-t vagy egy Döntési fát akarsz használni, egyszerűen átírod a `LinearRegression` szót `DecisionTreeRegressor`-ra, és a kód többi része változatlan marad. Az algoritmusok csereszabatosak, mint a legókockák!
+
+---
+
+## 4.4 Az algoritmusok sajátosságai (Gyakorlati szempontok)
+
+Bár az algoritmusok (SVM, kNN, Döntési fa, Logisztikus regresszió) elméleti szinten mind a hiba minimalizálására törekszenek, a gyakorlatban nagyon másképp viselkednek. Egy adattudós (Data Analyst) feladata kiválasztani a feladathoz legjobban illőt. Mik a fő különbségek?
+
+### 1. Hiperparaméterek
+
+Ezeket neked kell beállítanod a betanítás előtt (a gép ezeket nem tudja megtanulni).
+
+- **SVM:** $C$ (a margó és a büntetés aránya).
+- **Döntési fa (ID3):** Maximális mélység ($d$) vagy az entrópia-csökkenés minimuma ($\epsilon$).
+- **Gradiens ereszkedés:** Tanulási ráta ($\alpha$).
+
+### 2. Bemeneti adatok típusa (Számok vs. Kategóriák)
+
+A legtöbb matematikai algoritmus (SVM, kNN, Logisztikus regresszió) szigorúan csak **számokat** fogad el (pl. vektorokat). A gépek nem tudnak a "Piros" vagy "Zöld" szavakkal osztani és szorozni.
+
+Azonban a **Döntési fák** zokszó nélkül megeszik a szöveges (kategorikus) adatokat is, hiszen egy faágra simán fel lehet írni, hogy: *"HA a szín == Piros, menj balra"*.
+
+> *(Megjegyzés: A gyakorlatban a Scikit-Learn mindenhez számokat kér, így a szövegeket mindig át kell majd alakítanunk számokká, de erről a könyv a következő fejezetben szól).*
+
+### 3. Osztályok súlyozása (Osztályegyensúly felborulása)
+
+Képzeld el, hogy rákot próbálsz szűrni: van $10\,000$ egészséges és mindössze $10$ beteg páciensed. A gépek imádnak lusták lenni: ha a gép mindenkit egészségesnek mond, máris $99.9\%$-os a pontossága, mégsem ér semmit.
+
+Egyes algoritmusoknál (pl. SVM) be lehet állítani egy súlyozást. Megmondhatod a gépnek: *"Ha egy rákos (kisebbségi) pácienst elnézel, azért 1000-szer nagyobb büntetést kapsz, mintha egy egészségeset tévesztenél el."* Így kényszeríted az algoritmust, hogy figyeljen a ritka, de fontos osztályra.
+
+### 4. A kimenet típusa (Osztály vs. Valószínűség)
+
+Ha egy adatot beküldesz, a modell válasza többféle lehet:
+
+- **SVM / kNN:** Ezek "kemény" (hard) osztályozók. Csak a végső kategóriát adják vissza (pl. *"Ez egy Macska"*). Nem tudják megmondani, mennyire biztosak benne.
+- **Logisztikus Regresszió / Döntési Fa:** Ezek "lágy" (soft) osztályozók. Egy $0$ és $1$ közötti pontszámot (valószínűséget) adnak vissza. (Pl. *"0.87 az esélye, hogy ez egy Macska"*). Ez a gyakorlatban sokkal hasznosabb, mert a mérnök dönthet úgy, hogy csak $0.95$ felett hisz a gépnek.
+
+### 5. Tanulási stílus (Egyszeri vs. Iteratív / Batch)
+
+A Döntési fák, SVM, kNN csak úgy tudnak tanulni, ha egyszerre látják a memóriában a teljes, $100\%$-os adathalmazt. Ha holnap kapsz 10 új adatpontot, az egész modellt a nulláról, elölről kell újra tanítani az összes régi és az új adat együttesével.
+
+Ezzel szemben bizonyos algoritmusok (pl. Naiv Bayes, Neurális hálózatok, SGD algoritmusok) képesek **iteratívan** tanulni. Úgy is hívják ezt, hogy "Online learning". Ha jön egy adag (batch) új adat, a modellt nem kell kidobni; egyszerűen "rá lehet tanítani" a meglévő "agyára" az új információkat.
+
+### 6. Feladat típusa
+
+Néhány algoritmus (Döntési fák, kNN, SVM – bizonyos kiegészítésekkel) igazi svájci bicska: **Osztályozásra (Classification) és Regresszióra (Regression) is használhatók**. Mások (mint a Logisztikus regresszió) szigorúan csak osztályozásra alkalmasak.
