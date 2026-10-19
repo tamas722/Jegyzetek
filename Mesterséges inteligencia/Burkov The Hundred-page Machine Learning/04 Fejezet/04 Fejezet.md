@@ -70,6 +70,87 @@ b_{\text{új}} = b_{\text{régi}} - \alpha \cdot \frac{\partial L}{\partial b}
 
 (Az $\alpha$ (alpha) a tanulási ráta, ami megszabja, mekkora lépéseket teszünk.)
 
+## Kézzel fogható számpélda: A Gradiens Ereszkedés első lépései
+
+Hogy megértsük a matematikai motort, hajtsunk végre manuálisan egy teljes iterációt (Epoch 1) egy végtelenül leegyszerűsített adathalmazon!
+
+### 1. A kiindulási adatok és paraméterek
+
+Legyen egy "játék" adathalmazunk, ahol csak $N=2$ vállalatunk van.
+
+- **1. Vállalat:** Költés: $x_1 = 1$, Eladás: $y_1 = 2$
+- **2. Vállalat:** Költés: $x_2 = 2$, Eladás: $y_2 = 4$
+
+*(Emberi szemmel azonnal látjuk, hogy a tökéletes összefüggés $y = 2x$, azaz az optimális modell $w=2$ és $b=0$ lenne. Lássuk, rájön-e a gép!)*
+
+**Kezdeti beállítások a gépben:**
+
+- Kezdő súly: $w = 0$
+- Kezdő eltolás (bias): $b = 0$
+- Tanulási ráta: $\alpha = 0.1$ (Mekkora lépést tegyen a gép)
+
+### 2. A hibák (Errors) kiszámítása a 0. pillanatban
+
+A modellünk jelenleg: $f(x) = 0 \cdot x + 0 = 0$. Vagyis mindenre nullát tippel.
+
+- 1. vállalatnál a tévedés: $(y_1 - f(x_1)) = 2 - 0 = \mathbf{2}$
+- 2. vállalatnál a tévedés: $(y_2 - f(x_2)) = 4 - 0 = \mathbf{4}$
+
+### 3. A Gradiensek (Deriváltak) kiszámítása
+
+A képletek alapján kiszámoljuk, merre lejt a hegyoldal (vagyis mennyit változzon a $w$ és a $b$). A derivált képlete a tévedéseket használja fel:
+
+**A gradiens $w$ szerint (Meredekség módosítása):**
+
+```math
+\frac{\partial L}{\partial w} = \frac{1}{N} \left( -2 x_1 \cdot \text{tévedés}_1 - 2 x_2 \cdot \text{tévedés}_2 \right)
+```
+
+Behelyettesítve:
+
+```math
+\frac{\partial L}{\partial w} = \frac{1}{2} \left( -2(1)(2) + -2(2)(4) \right) = \frac{1}{2} \left( -4 - 16 \right) = \frac{-20}{2} = \mathbf{-10}
+```
+
+**A gradiens $b$ szerint (Eltolás módosítása):**
+
+```math
+\frac{\partial L}{\partial b} = \frac{1}{N} \left( -2 \cdot \text{tévedés}_1 - 2 \cdot \text{tévedés}_2 \right)
+```
+
+Behelyettesítve:
+
+```math
+\frac{\partial L}{\partial b} = \frac{1}{2} \left( -2(2) + -2(4) \right) = \frac{1}{2} \left( -4 - 8 \right) = \frac{-12}{2} = \mathbf{-6}
+```
+
+### 4. A paraméterek frissítése (A "Lépés")
+
+Most, hogy megvannak az irányok ($-10$ és $-6$), a gép tesz egy lépést lefelé, a tanulási ráta ($\alpha = 0.1$) nagyságával szorozva:
+
+```math
+w_{\text{új}} = w_{\text{régi}} - \alpha \cdot \frac{\partial L}{\partial w} = 0 - 0.1 \cdot (-10) = 0 + 1 = \mathbf{1}
+```
+
+```math
+b_{\text{új}} = b_{\text{régi}} - \alpha \cdot \frac{\partial L}{\partial b} = 0 - 0.1 \cdot (-6) = 0 + 0.6 = \mathbf{0.6}
+```
+
+### 🎉 Az első Epoch (iteráció) véget ért!
+
+A gép új modellje mostantól: $f(x) = 1x + 0.6$
+
+**Bizonyítás: Valóban okosodott a gép?**
+
+Nézzük meg az új tévedéseket az 1. lépés után!
+
+- 1. vállalat becslése: $1(1) + 0.6 = 1.6 \quad \rightarrow$ Új hiba: $2 - 1.6 = \mathbf{0.4}$ (A korábbi 2.0 helyett!)
+- 2. vállalat becslése: $1(2) + 0.6 = 2.6 \quad \rightarrow$ Új hiba: $4 - 2.6 = \mathbf{1.4}$ (A korábbi 4.0 helyett!)
+
+### Konklúzió
+
+Egyetlen iteráció alatt a gép radikálisan csökkentette a hibát, közeledve a tökéletes ($w=2, b=0$) állapothoz! Ezt ismétli meg a Python ciklus több ezerszer (Epoch), amíg a hiba el nem éri a nullát.
+
 ### A Python kód magyarázata
 
 Lássuk, hogyan néz ki ez a fenti elmélet tiszta Python kódban!
