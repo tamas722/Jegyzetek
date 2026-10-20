@@ -45,9 +45,9 @@ f(x) &= 36 - 10 + 10 = 36
 
 A modell predikciója tehát **36 millió Ft**.
 
-> 📍 **[KÉP HELYE: IDE JÖN AZ 1. ÁBRA]**
->
-> Itt kell szerepelnie a könyv *Figure 1* ábrájának. Ez az ábra azt vizualizálja, ahogy egydimenziós bemenet esetén (pl. csak az alapterület) a modell egy szimpla egyenest húz az adatpontok közé.
+<img width="506" height="392" alt="1" src="https://github.com/user-attachments/assets/12fbc738-cc23-45f6-acc4-182946bfbf91" />
+
+ Ez az ábra azt vizualizálja, ahogy egydimenziós bemenet esetén (pl. csak az alapterület) a modell egy szimpla egyenest húz az adatpontok közé.
 
 **Különbség az SVM-hez képest:**
 
@@ -125,11 +125,15 @@ A válasz az **Overfitting (Túltanulás)**.
 
 Egy komplex modell (pl. ami $x^{10}$-nel dolgozik) tökéletesen, 0 hibával (Költség = 0) bemagolja a tanítóadatokat. Viszont olyan vadul fog ugrálni a pontok között, hogy ha bejön egy új adat, hatalmasat fog tévedni rajta. A lineáris regresszió "merevsége" egy beépített fék, ami megakadályozza, hogy a modell túltanulja a zajt.
 
-> 📍 **[KÉP HELYE: IDE JÖN A 2. ÁBRA]**
->
-> Itt kell szerepelnie a könyv *Figure 2: Overfitting* ábrájának. Ez az ábra tökéletesen bemutatja, ahogy a 10-edfokú (piros) polinom kanyarogva érint minden kék pontot, de a legelső új $x_{\text{new}}$ pontnál a becslés teljesen elszáll az értelmezhető tartományból.
->
-> # 3.2 Logisztikus Regresszió (Logistic Regression)
+<img width="453" height="376" alt="2" src="https://github.com/user-attachments/assets/d56e25c8-b365-401a-9508-7f0d8ef849a7" />
+
+ Ez az ábra tökéletesen bemutatja, ahogy a 10-edfokú (piros) polinom kanyarogva érint minden kék pontot, de a legelső új $x_{\text{new}}$ pontnál a becslés teljesen elszáll az értelmezhető tartományból.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez](https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/03%20Fejezet/polinomoverfitting.html)
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez](https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/03%20Fejezet/PolynomialCurveFitting.html)
+
+ # 3.2 Logisztikus Regresszió (Logistic Regression)
 
 A legfontosabb dolog, amit rögtön az elején tisztázni kell: a nevével ellentétben a logisztikus regresszió **nem regressziós, hanem egy osztályozó (classification) algoritmus**. A nevét a statisztikából hozta, mivel a matematikai formulája nagyon hasonlít a lineáris regresszióhoz. Bár a könyv a bináris (kétosztályos) problémán keresztül mutatja be, természetesen kiterjeszthető többosztályos feladatokra is.
 
