@@ -195,9 +195,9 @@ epoch: 1200  loss: 24.33
 epoch: 2800  loss: 19.07
 ```
 
-> 📍 **[KÉP HELYE: IDE JÖN A 2. ÁBRA]**
->
-> Itt kell szerepelnie a könyv *Figure 2* ábrájának, amely egy 6 panelből álló képsorozat. Azt mutatja be vizuálisan, ahogy a kiindulási, vízszintes 0-ás vonal (Epoch 0) az iterációk során lassan ráfekszik a pontokra, amíg el nem éri a tökéletes dőlésszöget (Epoch 3000).
+<img width="696" height="422" alt="1" src="https://github.com/user-attachments/assets/996a7745-c13b-4bce-b4a9-641892079feb" />
+
+>  Azt mutatja be vizuálisan, ahogy a kiindulási, vízszintes 0-ás vonal (Epoch 0) az iterációk során lassan ráfekszik a pontokra, amíg el nem éri a tökéletes dőlésszöget (Epoch 3000).
 
 ## További fejlesztések a Gradiens Ereszkedésben
 
@@ -209,6 +209,7 @@ Erre találták ki a következő kiegészítőket:
 - **Adagrad / RMSprop:** Ezek az algoritmusok automatikusan állítgatják a lépésközt ($\alpha$) a futás során.
 - **Momentum:** Eltárolja a korábbi mozgás "lendületét". A legnépszerűbb modern ötvözet minderre az **Adam** optimalizáló.
 
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/04%20Fejezet/3DGradientDescent.html)
 
 ## 4.3 Hogyan dolgoznak a gépi tanulás mérnökei a gyakorlatban?
 
@@ -290,3 +291,5 @@ Ezzel szemben bizonyos algoritmusok (pl. Naiv Bayes, Neurális hálózatok, SGD 
 ### 6. Feladat típusa
 
 Néhány algoritmus (Döntési fák, kNN, SVM – bizonyos kiegészítésekkel) igazi svájci bicska: **Osztályozásra (Classification) és Regresszióra (Regression) is használhatók**. Mások (mint a Logisztikus regresszió) szigorúan csak osztályozásra alkalmasak.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/04%20Fejezet/ClassificationDecisionBoundaries.html)
