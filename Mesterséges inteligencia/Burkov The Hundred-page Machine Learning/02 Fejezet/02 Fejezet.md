@@ -532,6 +532,8 @@ Mi a "legjobb" $\large \theta^{*}$ paraméterérték az adatok alapján? Az, ame
 
 **A programozói valóság (Log-likelihood trükk):** A fenti képletben a $\large \prod$ azt jelenti, hogy rengeteg nagyon kicsi valószínűséget (pl. $\large 0.001$) kell összeszoroznunk. Egy számítógép memóriájában ez gyorsan "alulcsordulást" (numerical overflow/underflow) okoz, és kerekítési hibából $\large 0$ lesz. Emiatt a gyakorlatban mindig a kifejezés természetes logaritmusát ($\large \ln$) optimalizáljuk. A logaritmus azonossága miatt a szorzásból összeadás lesz, amivel a gépek már tökéletesen tudnak dolgozni!
 
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez](https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/02%20Fejezet/gaus.html<img width="783" height="391" alt="images" src="https://github.com/user-attachments/assets/b70db4cc-b29e-4125-b86c-c9b63bd907a8" />
+)
 ---
 
 # 2.6 Osztályozás vs. Regresszió (Classification vs. Regression)
@@ -563,6 +565,9 @@ Az algoritmus a tanító adatok alapján matematikai paramétereket tanul meg (m
 Itt maga az egész adathalmaz a modell. Az algoritmus "megjegyzi" az összes adatot.
 
 **Példa – kNN (k-Nearest Neighbors):** Új adat osztályozásakor az algoritmus megnézi az új pont környezetét a térben, és a $\large k$ darab legközelebbi szomszédja alapján hoz döntést (amelyik osztályból több van a szomszédok között, az nyer).
+
+<img width="783" height="391" alt="images" src="https://github.com/user-attachments/assets/cac2dcd8-a8a3-4466-a5f0-b0108a62be62" />
+
 
 ---
 
