@@ -195,7 +195,8 @@ epoch: 1200  loss: 24.33
 epoch: 2800  loss: 19.07
 ```
 
-<img width="696" height="422" alt="1" src="https://github.com/user-attachments/assets/996a7745-c13b-4bce-b4a9-641892079feb" />
+<img width="812" height="472" alt="2" src="https://github.com/user-attachments/assets/9bc9692b-2817-497f-b6d0-8f4c46af56ca" />
+
 
 >  Azt mutatja be vizuálisan, ahogy a kiindulási, vízszintes 0-ás vonal (Epoch 0) az iterációk során lassan ráfekszik a pontokra, amíg el nem éri a tökéletes dőlésszöget (Epoch 3000).
 
