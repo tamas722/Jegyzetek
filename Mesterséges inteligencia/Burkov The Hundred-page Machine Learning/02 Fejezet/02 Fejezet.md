@@ -168,6 +168,9 @@ Ha a vektort a mátrix bal oldalára tesszük, transzponálni kell, azaz az oszl
 
 Ebben az esetben a vektor dimenziószámának a mátrix sorainak számával kell megegyeznie. Az eredmény egy sorvektor lesz, ahol a vektor az egyes mátrix-oszlopokkal lép skaláris szorzatba.
 
+ [Kattints ide az interaktív HTML widget megtekintéséhez](./widget.html)
+
+
 ## 2.1.6 Függvények (Functions)
 
 A függvény egy olyan matematikai kapcsolat (hozzárendelés), amely egy $\large X$ halmaz (az értelmezési tartomány vagy bemenet) minden egyes eleméhez hozzárendeli egy $\large Y$ halmaz (a képtartomány vagy kimenet) pontosan egy elemét.
