@@ -168,8 +168,7 @@ Ha a vektort a mátrix bal oldalára tesszük, transzponálni kell, azaz az oszl
 
 Ebben az esetben a vektor dimenziószámának a mátrix sorainak számával kell megegyeznie. Az eredmény egy sorvektor lesz, ahol a vektor az egyes mátrix-oszlopokkal lép skaláris szorzatba.
 
- 👉 [Kattints ide az interaktív HTML widget megtekintéséhez](https://github.io)
-
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez](https://github.io)
 
 
 ## 2.1.6 Függvények (Functions)
