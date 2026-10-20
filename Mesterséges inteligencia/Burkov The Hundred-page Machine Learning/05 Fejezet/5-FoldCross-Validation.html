@@ -1082,6 +1082,7 @@ button.active, button.is-active, button.selected, button.is-selected, button[ari
 </script>
 </head>
 <body>
+  <div style="max-width: 900px; margin: 0 auto; padding: 20px; box-sizing: border-box;">
   <div class="widget-container">
     <!-- Header -->
     <div class="widget-header">
@@ -1498,5 +1499,6 @@ button.active, button.is-active, button.selected, button.is-selected, button[ari
   </script>
 
 <script>/*luminous-slider-normalizer*/(function(){function f(r){if(!r||r.type!=='range')return;var mn=parseFloat(r.min||'0'),mx=parseFloat(r.max||'100'),v=parseFloat(r.value);if(isNaN(v))v=(mn+mx)/2;var p=mx>mn?((v-mn)/(mx-mn))*100:50;r.style.setProperty('--progress',p+'%');r.style.removeProperty('--slider-fill');}function all(){document.querySelectorAll('input[type="range"], .lumi-slider').forEach(f);}document.addEventListener('input',function(e){f(e.target);});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',all);else all();})();</script>
+</div>
 </body>
 </html>
