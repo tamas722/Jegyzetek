@@ -35,6 +35,8 @@ Minden egyes kategóriából (színből) csinálunk egy külön, új oszlopot (d
 
 **Ára:** Megnöveli a dimenziók számát. Ha 1000 féle városnév volt az oszlopban, a One-Hot kódolás hirtelen 1000 új oszlopot ad az adathalmazunkhoz.
 
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/05%20Fejezet/CategoricalEncodingVisualizer.html)
+
 ### 5.1.2 Dobozolás / Kategorizálás (Binning / Bucketing)
 
 Ez pontosan a One-Hot kódolás fordítottja: egy folytonos, végtelen számértéket alakítunk át mesterséges kategóriákká.
@@ -89,6 +91,8 @@ x_{\text{stand}} = \frac{x - \mu}{\sigma}
 - **Standardizációt** használj, ha az adataidban vannak extrém kiugró értékek (outliers). (A normalizáció a $\max(x)$ miatt egyetlen gigantikus kiugró adat miatt a többi millió normál adatot annyira "összenyomná", hogy eltűnnének köztük a különbségek).
 - **Normalizációt** használj minden egyéb, "normális" tartományú adatnál.
 
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/05%20Fejezet/ScalingUnderOutliers.html)
+
 ### 5.1.5 és 5.1.6 Hiányzó adatok (Missing Features) kezelése és Imputáció
 
 A valóságban az adathalmazok "lyukasak". Valaki elfelejtette beírni a lakás alapterületét, vagy megszakadt a szenzor kapcsolata. Mivel a matematikai képletek nem tudnak az "üres" hellyel (Null / NaN) számolni, kezdenünk kell velük valamit.
@@ -134,9 +138,12 @@ Ha az adatok egy egyszerű egyenessel/síkkal szétválaszthatók, a Logisztikus
 
 > *(Ha Pythonban dolgozol, a Scikit-Learn csapata készített egy zseniális "csalópuskát" (Cheat Sheet) a választáshoz, amit a könyv is bemutat).*
 
-> 📍 **[KÉP HELYE: IDE JÖN AZ 1. ÁBRA (5. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 1: Machine learning algorithm selection diagram for scikit-learn.* ábrájának. Ez egy folyamatábra, amely Start pontból indulva ("Több mint 50 adatod van?") vezet el a megfelelő algoritmushoz (pl. "Classification $\rightarrow$ Linear SVC").
+<img width="581" height="733" alt="1" src="https://github.com/user-attachments/assets/fd15c8a1-86b5-4164-817e-60a6b6da4c78" />
+
+>  Ez egy folyamatábra, amely Start pontból indulva ("Több mint 50 adatod van?") vezet el a megfelelő algoritmushoz (pl. "Classification $\rightarrow$ Linear SVC").
+
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/05%20Fejezet/MLAlgorithmDecisionNavigator.html)
 
 ---
 
@@ -163,6 +170,8 @@ A klasszikus ökölszabály: **70% Tanító / 15% Validációs / 15% Teszt.**
 
 **A Big Data korszaka:** Ha több millió adatod van, felesleges százezreket pazarolni a tesztelésre. Ilyenkor a modern arány gyakran: **95% Tanító / 2.5% Validációs / 2.5% Teszt.**
 
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/05%20Fejezet/DatasetVolumeSplitter.html)
+
 ## 5.4 Alulillesztés (Underfitting) és Túltanulás (Overfitting)
 
 A modellek teljesítményét két fő statisztikai fogalommal, a torzítással (bias) és a varianciával (variance) jellemezzük.
@@ -177,9 +186,9 @@ Ha a modell a tanító adatokon is sok hibát vét, azt mondjuk, hogy alulillesz
 
 **Megoldás:** Bonyolultabb modell választása (pl. lineáris helyett polinomiális), vagy jobb jellemzőmérnökség (erősebb prediktív erejű adatok kinyerése).
 
-> 📍 **[KÉP HELYE: IDE JÖN A 2. ÁBRA (5. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 2: Examples of underfitting...* ábrájának. Ez a klasszikus 3 paneles kép, ami bemutatja az alulillesztést (merev egyenes), a jó illeszkedést (U-alakú görbe) és a túltanulást (vadul oszcilláló 15-ödfokú polinom).
+<img width="932" height="333" alt="2" src="https://github.com/user-attachments/assets/4d2809d8-6415-412f-94eb-2d474f1cadec" />
+
+>  Ez a klasszikus 3 paneles kép, ami bemutatja az alulillesztést (merev egyenes), a jó illeszkedést (U-alakú görbe) és a túltanulást (vadul oszcilláló 15-ödfokú polinom).
 
 ### 2. Túltanulás (High Variance / Magas variancia)
 
@@ -320,6 +329,8 @@ A gyakorlatban lehetetlen mindkettőt 100%-on tartani.
 - **Spamszűrőnél:** Magas Precíziót akarsz! Nem baj, ha átcsúszik pár spam (alacsony Recall), de egyetlen fontos levelet (FP) se dobjon ki a gép. Ezt úgy éred el, hogy a gép csak akkor riaszt, ha legalább $0.9$ ($90\%$) a valószínűség.
 - **Rákszűrésnél:** Magas Recall-t akarsz! Nem baj, ha sok embert tévesen hívsz vissza további drága tesztekre (FP), de egyetlen rákos beteget se küldj haza úgy, hogy makkegészséges (FN)! Itt már $0.1$ ($10\%$)-os rákesélynél is riasztania kell a gépnek.
 
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/05%20Fejezet/ClassificationThresholdSimulator.html)
+
 #### 5.6.3 Pontosság (Accuracy)
 
 A legnépszerűbb, de a legveszélyesebb metrika.
@@ -360,9 +371,9 @@ A gép végigzongorázza a küszöbértéket $0.0$-tól $1.0$-ig (pl. $[0.1, 0.2
 - Ha a küszöb $0.0$: A gép mindenre riaszt. $100\%$ lesz a TPR (megtalált minden spamet), de $100\%$ lesz az FPR is (minden normál levelet is kidobott). Ez a grafikon jobb felső sarka.
 - Ha a küszöb $1.0$: A gép sosem riaszt. $0\%$ a TPR, és $0\%$ az FPR. Ez a bal alsó sarok.
 
-> 📍 **[KÉP HELYE: IDE JÖN A 3. ÁBRA (5. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 3: Area under the ROC curve.* ábrájának. Ez 4 db kis panelt mutat egymás mellett, ahol látszik, ahogy a görbe egyre jobban "kidudorodik" a bal felső sarok felé, és az alatta lévő terület (AUC) egyre nő.
+<img width="762" height="777" alt="3" src="https://github.com/user-attachments/assets/52fd1500-9e26-4340-8a55-d36d81949307" />
+
+> Ez 4 db kis panelt mutat egymás mellett, ahol látszik, ahogy a görbe egyre jobban "kidudorodik" a bal felső sarok felé, és az alatta lévő terület (AUC) egyre nő.
 
 **Az AUC (Area Under the Curve - Görbe alatti terület):**
 
@@ -372,6 +383,8 @@ Ez egyetlen szám, ami megmondja, milyen jó a modell.
 - **$\text{AUC} = 0.85$:** Nagyon jó modell (Erősen kidudorodik a bal felső sarok felé).
 - **$\text{AUC} = 0.5$:** A teljesen véletlenszerű, pénzfeldobós modell. (Egy egyenes átló a grafikonon). Ha ilyet kapsz, dobhatod ki a modellt.
 - **$\text{AUC} < 0.5$:** A modell rosszabb, mint a vak tippelés. Valamit nagyon elrontottál a programozás során (vagy fordítva tanítottad be a címkéket).
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/05%20Fejezet/ROCCurve%20ClassSeparability.html)
 
 - ## 5.7 Hiperparaméter-hangolás (Hyperparameter Tuning)
 
@@ -400,6 +413,8 @@ A Rácskeresés veszi a $7 \times 2 = \mathbf{14}$ kombinációt:
 3. ...és így tovább, egészen a 14. Modellig ($C=1000$, Kernel='rbf').
 
 A géped betanít 14 különálló modellt a Tanító halmazon, majd mind a 14-et leteszteli a Validációs halmazon. Amelyik a legmagasabb pontszámot éri el, az lesz a győztes párosítás.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/05%20Fejezet/GridSearchOptimization.html)
 
 ### 2. Véletlenszerű keresés (Random Search)
 
@@ -434,6 +449,8 @@ A leggyakoribb a $K=5$ (5-szörös) keresztvalidáció. Lássuk egy konkrét, 10
 
 **Miért zseniális ez?**
 Mert így minden egyes adatpont pontosan egyszer szerepelt validációs adatként, és négyszer tanító adatként! Egyetlen adatot sem pazaroltunk el.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/05%20Fejezet/5-FoldCross-Validation.html)
 
 ---
 
