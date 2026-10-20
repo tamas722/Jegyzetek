@@ -112,7 +112,8 @@ A valóságban az adathalmazok "lyukasak". Valaki elfelejtette beírni a lakás 
 
 > **(Nagyon fontos szabály:** Bármilyen imputációs technikát (pl. átlagolás) használtál a tanítóadatokon, pontosan ugyanazt a technikát és ugyanazt az átlagértéket kell használnod éles környezetben, amikor bejön egy új, hiányos adat a predikció során!)
 >
-> ## 5.2 Tanuló algoritmus kiválasztása (Learning Algorithm Selection)
+
+ ## 5.2 Tanuló algoritmus kiválasztása (Learning Algorithm Selection)
 
 A gyakorlatban egy adatkutatónak sosincs ideje az összes létező algoritmust végigpróbálgatni. Ehelyett az alábbi kérdések megválaszolásával szűkíti le a kört néhány esélyes jelöltre:
 
