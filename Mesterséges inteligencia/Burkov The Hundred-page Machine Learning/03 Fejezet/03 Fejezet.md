@@ -185,9 +185,7 @@ f(-3.0) = \frac{1}{1 + e^{-(-3.0)}} = \frac{1}{1 + e^{3.0}} \approx \frac{1}{1 +
 
 A modell szerint csak $4.7\%$ az esély a pozitív osztályra, tehát egyértelműen a negatív ($0$) osztályba sorolja.
 
-> 📍 **[KÉP HELYE: IDE JÖN A 3. ÁBRA]**
->
-> Itt kell szerepelnie a könyv *Figure 3: Standard logistic function* ábrájának, amely a jellegzetes, S-alakú szigmoid görbét mutatja $0$ és $1$ közé szorítva.
+<img width="512" height="407" alt="3" src="https://github.com/user-attachments/assets/e3d353b0-23de-4a7b-a8b8-690eabc4aba5" />
 
 ## 3.2.2 A megoldás: Maximum Likelihood (Maximális Valószerűség)
 
@@ -252,6 +250,8 @@ Mivel a logaritmus szigorúan monoton nő, ha megtaláljuk azt a $\mathbf{w}$ é
 
 **Fontos különbség:** A lineáris regresszióval ellentétben ennek a Log-Likelihood függvénynek a maximalizálására **nincs zárt matematikai formula** (nem lehet egyetlen lépésben kiszámolni). Ehelyett numerikus optimalizációra, például **Gradiens ereszkedésre** (Gradient Descent) van szükség, amit a következő fejezet tárgyal.
 
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/03%20Fejezet/LogisticSigmoidFunction.html)
+
 # 3.3 Döntési fák (Decision Tree Learning)
 
 A döntési fa egy olyan irányított, körmentes gráf (acyclic graph), amelyben logikai döntések sorozatával jutunk el a végeredményhez.
@@ -304,9 +304,8 @@ f_{\text{ID3}}^{S} = \frac{6}{10} = \mathbf{0.6}
 
 Azaz $60\%$ eséllyel beteg. Ez még nagyon pontatlan. Ezt a kiindulási állapotot mutatja be az alábbi ábra (a) része.
 
-> 📍 **[KÉP HELYE: IDE JÖN A 4. ÁBRA]**
->
-> Itt kell szerepelnie a könyv *Figure 4: An illustration of a decision tree building algorithm.* ábrájának, amely bemutatja (a) a gyökércsomópontot az átlagos valószínűséggel, és (b) az első vágást, amikor a 3. jellemzőt egy 18.3-as küszöbérték mentén kettéosztja a fa.
+<img width="736" height="438" alt="4" src="https://github.com/user-attachments/assets/fe90761d-a3d0-4b7c-b4ab-ac65d1eb9bdb" />
+
 
 #### 2. A Vágás (Splitting)
 
@@ -378,6 +377,8 @@ H(S^-, S^+) = \frac{4}{10} \cdot 0 + \frac{6}{10} \cdot 0 = \mathbf{0}
 
 Mivel az entrópia $0$-ra csökkent, a gép tökéletes vágást talált: megtanulta, hogy aki lázas, az beteg, aki nem, az egészséges.
 
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/03%20Fejezet/BinaryEntropyViz.html)
+
 ---
 
 ## Megállási feltételek (Stopping criteria)
@@ -401,9 +402,9 @@ Azonban a való világban az adatok sosem ilyen tökéletesek. Két kritikus pro
 1. **Zaj (Noise):** Mi van, ha egy-két hibás adatpont átlóg a rossz térfélre, és emiatt lehetetlen egy tökéletes egyenest húzni közéjük?
 2. **Belső nem-linearitás (Inherent Non-Linearity):** Mi van, ha az adatok alakzata mondjuk egy kör, amit matematikailag képtelenség egyetlen egyenessel kettévágni?
 
-> 📍 **[KÉP HELYE: IDE JÖN AZ 5. ÁBRA]**
->
-> Itt kell szerepelnie a könyv *Figure 5* ábrájának. A bal oldali kép a zajt mutatja (ahol egy egyenes működne, de egy-egy pont bezavar), a jobb oldali kép pedig a nem-lineáris köralakzatot, ahol az egyenes teljesen csődöt mond.
+<img width="737" height="322" alt="5" src="https://github.com/user-attachments/assets/e03af1cc-bdfc-4b64-a3c8-3128631a0dff" />
+
+>  A bal oldali kép a zajt mutatja (ahol egy egyenes működne, de egy-egy pont bezavar), a jobb oldali kép pedig a nem-lineáris köralakzatot, ahol az egyenes teljesen csődöt mond.
 
 ## 3.4.1 Zajos adatok kezelése (Soft-Margin SVM)
 
@@ -466,9 +467,9 @@ Mi van a jobb oldali ábrával, ahol a kék pontok egy kört formáznak, amit k�
 
 **Az ötlet:** Emeljük fel az adatokat 3 Dimenzióba! Ha a pontokat egy megfelelő matematikai függvénnyel ($\phi$) átsugározzuk a 3D térbe, ott a köralakzat egy tálca formáját fogja felvenni, amit már simán el lehet vágni egy sík lappal (hipersíkkal).
 
-> 📍 **[KÉP HELYE: IDE JÖN A 6. ÁBRA]**
->
-> Itt kell szerepelnie a könyv *Figure 6* ábrájának, amely megmutatja, ahogy a 2 dimenziós körből egy 3 dimenziós "kehely" lesz, amit már gyönyörűen el tud vágni egy sík.
+<img width="787" height="430" alt="6" src="https://github.com/user-attachments/assets/91b67e98-c6b1-4b5b-a7ec-1caf1cf29118" />
+
+> Megmutatja, ahogy a 2 dimenziós körből egy 3 dimenziós "kehely" lesz, amit már gyönyörűen el tud vágni egy sík.
 
 ### A probléma a dimenzióváltással (És a zseniális megoldás)
 
@@ -547,6 +548,8 @@ Ennek a kernelnek az igazi szuperképessége az, hogy a matematikai háttere mia
 
 Ez a rövid vizualizációs galéria zseniálisan mutatja be mozgásban, miről is szól ez az egész. Kattints a videóra, és figyeld meg, ahogy a 2D síkon körbe zárt piros/kék pontok hirtelen a magasba emelkednek (a 3D térbe), ahol egy egyszerű sík egyetlen vágással kettéválasztja őket. Pontosan ez a Kernel Trükk geometriai lényege.
 
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/03%20Fejezet/KernelTrickPolynomialFeatureMapping.html)
+
 # 3.5 k-Legközelebbi Szomszéd (k-Nearest Neighbors – kNN)
 
 A kNN egy **nem-parametrikus** (non-parametric) tanuló algoritmus. Míg a lineáris regressziónál vagy az SVM-nél a gép megtanulta a $\mathbf{w}$ és $b$ paramétereket, majd az eredeti adatokat kidobtuk a memóriából, a kNN pont az ellenkezőjét csinálja: nincs külön "betanulási" fázisa, a teljes adathalmazt megtartja a memóriában, mert maga az adathalmaz a modell. Ezt **példány-alapú** (instance-based) tanulásnak hívjuk.
@@ -565,6 +568,8 @@ Amikor érkezik egy új, eddig sosem látott $\mathbf{x}$ adat, a kNN a követke
 Tegyük fel, $k=5$. Bejön egy új adatpont. A gép megkeresi az 5 legközelebbi szomszédot, akiknek a címkéi a következők: `[Beteg, Egészséges, Beteg, Beteg, Egészséges]`.
 
 Mivel 3 szavazat érkezett a "Beteg" osztályra és csak 2 az "Egészséges"-re, a modell az új pontot a **Beteg** kategóriába sorolja.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/03%20Fejezet/k-NearestNeighbors(kNN)Classifier.html)
 
 ---
 
@@ -614,6 +619,8 @@ Vegyünk két kétdimenziós vektort (pl. egy dokumentum szavainak gyakorisága)
 ```
 
 *(Matekos érdekesség: A $0.707$ pontosan a $45^\circ$ koszinusza ($\sqrt{2}/2$), ami logikus, hiszen az $[3, 0]$ és a $[3, 3]$ vektorok pontosan $45^\circ$-ot zárnak be egymással!)*
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/03%20Fejezet/CosineSimilarity.html)
 
 ---
 
