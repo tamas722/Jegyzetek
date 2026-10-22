@@ -44,13 +44,15 @@ Akárcsak a Kernel Regressziónál (7. fejezet), a $b$ hiperparaméter a legfont
 - **Túl nagy $b$ (Alulillesztés / Underfitting):** A kis harangok hatalmasra és laposra híznak. Szinte teljesen összemossák az adatokat, a végső görbe egy unalmas, lapos domb lesz. Elveszítjük a finom, fontos mintázatokat.
 - **A tökéletes $b$ (Jó illeszkedés):** A görbe szépen, simán hullámzik, kiemelve a sűrűbb régiókat.
 
-> 📍 **[KÉP HELYE: IDE JÖN AZ 1. ÁBRA (9. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 1: Kernel density estimation* ábrájának. Ez 4 kis panelt mutat:
+<img width="627" height="532" alt="1" src="https://github.com/user-attachments/assets/f8348ad4-0b5a-4e61-b26a-f87dce6f4f88" />
+
+>  Ez 4 kis panelt mutat:
 > - **(a)** A tökéletes eloszlásgörbe.
 > - **(b)** A tüskés, túltanult görbe (túl kicsi $b$).
 > - **(c)** A lapos, alulillesztett görbe (túl nagy $b$).
 > - **(d)** A Grid Search "U-alakú" hibagörbéje, ami megmutatja, hol a legkisebb a hiba a $b$ változtatásakor.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/09%20Fejezet/KernelDensityEstimation(KDE).html)
 
 ### Hogyan találjuk meg a legjobb $b$-t matematikailag? (MISE és Keresztvalidáció)
 
@@ -100,9 +102,10 @@ Ez a világ leghíresebb és leggyakrabban használt klaszterező algoritmusa. G
 4. **Középpont frissítése (Update):** Most, hogy megvannak a csoportok, a gép kiszámolja az adott csoporthoz tartozó pontok átlagát (súlypontját). A Centroidokat áthelyezi ebbe az új súlypontba.
 5. **Ismétlés:** Mivel a Centroidok elmozdultak, a távolságok megváltoztak. Újra besoroljuk a pontokat a hozzájuk legközelebbi (új) Centroidhoz. Ezt addig ismételjük, amíg a Centroidok már egyáltalán nem mozognak (konvergálnak).
 
-> 📍 **[KÉP HELYE: IDE JÖN A 2. ÁBRA (9. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 2* ábrájának. Ez 4 kis panelt mutat:
+<img width="638" height="543" alt="2" src="https://github.com/user-attachments/assets/b325fdbe-f209-495b-b708-4125a0e0bbcd" />
+
+
+> Ez 4 kis panelt mutat:
 > - **(a)** Eredeti, szürke adatok.
 > - **(b)** 1. iteráció: Letettünk 3 véletlen négyzetet (Centroidot), a tér 3 színre bomlik.
 > - **(c)** 3. iteráció: A négyzetek elkezdenek vándorolni az adatcsoportok közepe felé.
@@ -112,6 +115,8 @@ Ez a világ leghíresebb és leggyakrabban használt klaszterező algoritmusa. G
 
 - **Neked kell tudnod a $k$-t:** Ha a valóságban 4 csoport van, de te $k=3$-at adsz meg, a gép kénytelen lesz két csoportot egybemosni. Ezt nagyon nehéz előre megtippelni sokdimenziós adatoknál.
 - **Gömb alakú klaszterek:** A távolságmérés miatt a K-Means mindig "gömb" (vagy kör) alakú csoportokat keres. Ha az adataid mondjuk kifli formájúak, vagy egymásba fonódó gyűrűk, a K-Means borzalmas munkát fog végezni, és egyszerűen kettévágja őket középen.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/09%20Fejezet/K-MeansAlgorithmStep-by-Step.html)
 
 ---
 
@@ -152,8 +157,10 @@ Neked mindössze egyetlen, nagyon intuitív paramétert kell megadnod: **$n$ (Mi
 Képes kezelni a változó sűrűségű csoportokat is, és rendkívül gyors millió soros adatokon is.
 
 > *(A könyv szerzőjének jótanácsa: A való életben mindig a HDBSCAN-nel kezdd a klaszterezést. Ha az nem működik, csak akkor nyúlj a K-Means-hez!)*
->
-> ### 9.2.3 A klaszterek számának meghatározása (Hány $k$ legyen?)
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/09%20Fejezet/ClusteringGeometryK-MeansvsDBSCAN.html)
+
+ ### 9.2.3 A klaszterek számának meghatározása (Hány $k$ legyen?)
 
 Ha a HDBSCAN helyett K-Means-t (vagy GMM-et) használsz, a legnagyobb fejfájásod a $k$ (a csoportok számának) kitalálása lesz. Dimenziók hiányában (pl. 2D vagy 3D) egyszerűen ránézel a pontfelhőre. De mi van, ha 50 dimenziós adataid vannak? Az emberi agy itt feladja.
 
@@ -173,14 +180,17 @@ Ha a $k=4$ a "valódi", természetes csoportok száma, akkor a Tanító adatokb�
 
 Ha viszont hülyeséget tippeltél (pl. valójában 2 csoport van, de te $k=4$-et kértél), az algoritmus a két nagy csoportot véletlenszerűen, mesterségesen fogja kettévágni. A Tanító adatokon a vágás máshová esik, mint a Teszt adatokon. Amikor egymásra vetíted őket, teljes lesz a káosz, a prediktív erő drasztikusan lecsökken.
 
-> 📍 **[KÉP HELYE: IDE JÖN A 3. ÁBRA (9. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 3* ábrájának, ami ezt a folyamatot mutatja:
+<img width="640" height="416" alt="3" src="https://github.com/user-attachments/assets/8591f370-a353-48aa-a603-b95407574f87" />
+
+
+> Ami ezt a folyamatot mutatja:
 > - **(a)** A Tanító adatokon felépült 4 klaszter régió.
 > - **(b)** A Teszt adatok saját 4 klaszter régiója.
 > - **(c)** Amikor a (b)-t rávetítik az (a)-ra, látszik, hogy a pontok teljesen rossz helyre (más színű régiókba) esnek. Ez bizonyítja, hogy a $k=4$ egy rossz választás volt.
 
 A kutatások szerint azt a legmagasabb $k$ értéket érdemes választani, ahol a Prediktív Erő $ps(k)$ még $0.8$ ($80\%$) felett marad.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/09%20Fejezet/PredictionStrengthMetric.html)
 
 ---
 
@@ -226,11 +236,14 @@ A képlet az új középpontra ($\mu_j$):
 **A ping-pong folytatódik:**
 A haranggörbék elmozdultak. Visszaugrunk az E-Lépésre, újra kiszámoljuk a százalékokat az új pozíciók alapján, majd újra az M-Lépésre... Addig ismételjük a lépéseket, amíg a haranggörbék a helyükre nem csúsznak és meg nem állnak.
 
-> 📍 **[KÉP HELYE: IDE JÖN AZ 5. ÁBRA (9. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 5* ábrájának, ami az EM algoritmus folyamatát mutatja 4 panelen (Iteration 1, 2, 10, 40). A képeken látszik, ahogy a kezdetben rossz helyen lévő, hatalmas zöld és kék haranggörbék (ellipszisek) lépésről lépésre összezsugorodnak és ráhúzódnak a két sűrű adatcsomópontra.
->
-> ## 9.3 Dimenziócsökkentés (Dimensionality Reduction)
+<img width="651" height="552" alt="5" src="https://github.com/user-attachments/assets/dc52d31c-19c3-485e-b814-1361dc956e89" />
+
+
+> Az EM algoritmus folyamatát mutatja 4 panelen (Iteration 1, 2, 10, 40). A képeken látszik, ahogy a kezdetben rossz helyen lévő, hatalmas zöld és kék haranggörbék (ellipszisek) lépésről lépésre összezsugorodnak és ráhúzódnak a két sűrű adatcsomópontra.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/09%20Fejezet/GaussianMixtureModel(EM%20Algorithm).html)
+
+ ## 9.3 Dimenziócsökkentés (Dimensionality Reduction)
 
 A modern mélytanulási algoritmusok (pl. neurális hálózatok) röhögve megeszik a több millió dimenziós (több millió jellemzőből álló) adatokat is. Akkor miért akarjuk csökkenteni a dimenziókat?
 
@@ -253,12 +266,15 @@ Képzeld el, hogy a levegőben lebeg egy csapatnyi méhecske, amelyek egy hossz�
 2. Ezután húz egy második tengelyt, ami szigorúan derékszöget zár be az elsővel (ortogonális), és a szivar "vastagságát" méri. Ez a **2. Főkomponens (PC2)**.
 3. Végül "rálapítja" (kivetíti / projektálja) az összes méhet erre az új 2D-s síkra, amit a PC1 és PC2 alkot. A 3D-s szivarból egy 2D-s palacsinta lett, de a formája és a méhek egymáshoz viszonyított távolsága a lehető legjobban megmaradt!
 
-> 📍 **[KÉP HELYE: IDE JÖN A 6. ÁBRA (9. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 6* ábrájának:
+<img width="627" height="237" alt="6" src="https://github.com/user-attachments/assets/6ea61a4b-c526-4b55-8de2-8b8b4e73d143" />
+
+
+> Az ábrán látható:
 > - **(a)** Az eredeti 2D-s, átlósan elnyúló adatfelhő.
 > - **(b)** A két egymásra merőleges Főkomponens-vektor (nyíl) berajzolva a felhőbe. A hosszabb nyíl mutat az elnyúlás irányába.
 > - **(c)** Az adatok "rálapítva" (leprojektálva) az 1. Főkomponensre, így 2 dimenzióból 1 dimenzió (egy egyenes) lett.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/09%20Fejezet/PCADimensionalityReduction.html)
 
 ### 9.3.2 UMAP (Uniform Manifold Approximation and Projection)
 
@@ -302,6 +318,8 @@ C(w, w') = \sum \sum \left[ w \ln\left(\frac{w}{w'}\right) + (1 - w) \ln\left(\f
 **Mi a cél?** Hogy a két gráf pontosan ugyanúgy nézzen ki! A Keresztentrópia akkor minimális, ha a 2D-s hasonlóságok ($w'$) tökéletesen megegyeznek az eredeti 50D-s hasonlóságokkal ($w$).
 
 A UMAP ráereszti a **Gradiens Ereszkedést** a 2D-s pontokra ($x'$), és elkezdi tologatni őket a síkon. Addig tologatja a pontokat, amíg az egyenlet a minimumra nem csökken.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/09%20Fejezet/UMAPOptimizationCross-EntropyMinimization.html)
 
 **MNIST Összehasonlítás**
 
@@ -360,3 +378,6 @@ Az Autoenkóder egy olyan **homokóra alakú** neurális hálózat, ami arra van
 A mérnöknek mindössze annyit kell tennie, hogy húz egy küszöbértéket a Rekonstrukciós Hibára. Ha a hiba efelett van, a gép automatikusan riaszt:
 
 > *"Ezt az adatot képtelen voltam újraalkotni, tehát ez valami olyasmi, ami nem illik a normál ügymenetbe. Ez egy anomália!"*
+
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/09%20Fejezet/AutoencoderReconstructionError.html)
