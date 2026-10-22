@@ -52,9 +52,10 @@ A legklasszikusabb, "vanília" neurális hálózat az Előrecsatolt (Feed-Forwar
 - **A "Neuron" (Unit):** Egy doboz, ami megkapja a bemeneteket, csinál egy lineáris regressziót ($\mathbf{w} \cdot \mathbf{x} + b$), majd az eredményt áttolja az aktivációs függvényen ($g$), ami kiköp egy számot. Ezt a számot küldi tovább a következő rétegbe.
 - **Teljesen összekötött (Fully-connected / Dense) rétegek:** Ez azt jelenti, hogy az 1. réteg összes neuronjának kimenete bemegy a 2. réteg összes neuronjának bemenetébe. Mindenki beszél mindenkivel.
 
-> 📍 **[KÉP HELYE: IDE JÖN AZ 1. ÁBRA (6. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 1* ábrájának, ami egy 3 rétegű MLP-t ábrázol. Bal oldalon a 2 db kör (bemenet), középen két rejtett réteg (egyenként 4 téglalappal/neuronnal), a jobb szélén pedig az 1 db kimeneti neuron.
+<img width="452" height="760" alt="1" src="https://github.com/user-attachments/assets/d98c3365-dcac-4503-9ee6-9f435a2ced2d" />
+
+
+>  Egy 3 rétegű MLP-t ábrázol. Bal oldalon a 2 db kör (bemenet), középen két rejtett réteg (egyenként 4 téglalappal/neuronnal), a jobb szélén pedig az 1 db kimeneti neuron.
 
 ### 6.1.2 Előrecsatolt (Feed-Forward) Architektúra felépítése
 
@@ -106,6 +107,8 @@ Tegyük fel, egy neuron lineáris része ($\mathbf{w}\cdot\mathbf{x} + b$) kisz�
 - $\text{TanH}(-3.0) \approx \mathbf{-0.995}$ (Lenyomta a $-1$ közelébe)
 - $\text{ReLU}(-3.0) = \mathbf{0.0}$ (Mivel negatív, a ReLU "kikapcsolja" ezt a neuront, nulla megy tovább)
 
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/06%20Fejezet/NeuralNetworkActivations.html)
+
 ## 6.2 Mély Tanulás (Deep Learning)
 
 A Mély Tanulás (Deep Learning) hivatalosan azt jelenti, hogy kettőnél több rejtett réteget használunk a neurális hálózatban. Sokáig az volt a probléma, hogy minél több réteget tettek egy hálózatba, az annál butább lett, vagy egyszerűen képtelen volt tanulni. Ennek a hátterében egy nagyon komoly matematikai probléma állt.
@@ -128,6 +131,8 @@ Mire a hiba (a frissítési parancs) elérne a legelső (bemeneti) rétegekhez, 
 
 **A Megoldás:**
 A 2010-es évek deep learning forradalmát többek között az indította be, hogy rájöttek: ha a hagyományos függvények helyett **ReLU-t** használnak (aminek a deriváltja pozitív számoknál stabilan pontosan $1$), a gradiens sosem tűnik el, így hirtelen lehetővé vált akár 100 rétegű hálózatok betanítása is!
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/06%20Fejezet/Backpropagation&VanishingGradient.html)
 
 ---
 
@@ -172,9 +177,10 @@ Egyszerűen rátesszük az $F$ szűrőt a $P$ képrészletre, a rajtuk lévő sz
 
 Ez a magas ($12$-es) szám azt jelzi a neurális hálónak, hogy *"Hé, ezen a képkockán valószínűleg találtam egy Kereszt alakzatot!"* Ezt az egyetlen számot menti el a hálózat, majd a szűrő csúszik egy pixellel arrébb, és kezdi elölről.
 
-> 📍 **[KÉP HELYE: IDE JÖN A 2. ÁBRA (6. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 2* ábrájának, amely lépésről lépésre mutatja be, ahogy egy $3 \times 3$-as kék szűrő végigcsúszik egy nagy zöld mátrixon, és minden lépésnél kiad egyetlen számot a piros kimeneti mátrixba.
+<img width="663" height="436" alt="2" src="https://github.com/user-attachments/assets/c16556f0-d31a-4b69-aa72-e2a28ad5ccc1" />
+
+
+> Lépésről lépésre mutatja be, ahogy egy $3 \times 3$-as kék szűrő végigcsúszik egy nagy zöld mátrixon, és minden lépésnél kiad egyetlen számot a piros kimeneti mátrixba.
 
 ### Miért zseniális a CNN? (Súlymegosztás)
 
@@ -188,11 +194,14 @@ A valóságban egy kép nem fekete-fehér (1 rétegű), hanem színes (RGB), aza
 
 Emiatt a szűrő is térfogati (pl. $3 \times 3 \times 3$-as), és egyszerre számol mind a három színcsatornán.
 
-> 📍 **[KÉP HELYE: IDE JÖN A 3. ÁBRA (6. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 3* ábrájának. Ez egy olyan térbeli mátrixszorzást mutat, ahol a szűrő 3 réteg (színcsatorna) mély, és az ezekből származó szorzatokat egyetlen végső számmá (itt $-3$) vonja össze.
->
-> ## 6.2.2 Rekurrens Neurális Hálózatok (Recurrent Neural Network - RNN)
+<img width="648" height="346" alt="3" src="https://github.com/user-attachments/assets/4c270b62-eaf3-43bc-a79a-0f95e3b9c9ef" />
+
+
+>  Ez egy olyan térbeli mátrixszorzást mutat, ahol a szűrő 3 réteg (színcsatorna) mély, és az ezekből származó szorzatokat egyetlen végső számmá (itt $-3$) vonja össze.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/06%20Fejezet/2DConvolutionOperation.html)
+
+ ## 6.2.2 Rekurrens Neurális Hálózatok (Recurrent Neural Network - RNN)
 
 Eddig olyan hálózatokat (FFNN, CNN) néztünk, amelyek megkapnak egy bemenetet (pl. egy lakás adatait vagy egy képet), áttolják az adatot balról jobbra a rétegeken, és a végén kiköpnek egy eredményt. Nincs memóriájuk. Ha beküldesz egy képet, majd egy másikat, a hálózat nem emlékszik az elsőre.
 
@@ -224,9 +233,12 @@ Amikor a hálózat a legutolsó szót is beolvasta, a legfelső réteg egy kimen
 
 > *(A Softmax a Szigmoid többdimenziós nagytesója: olyan százalékokat ad vissza minden lehetséges osztályra, amiknek az összege pontosan $100\%$ / $1.0$ lesz).*
 
-> 📍 **[KÉP HELYE: IDE JÖN A 4. ÁBRA (6. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 4: The first two layers of an RNN* ábrájának. Ez az ábra azt mutatja be, ahogy a hálózatot "kigöngyöljük" (unfold) az időben. Látszik rajta az $x_t$ bemenet, és ahogy a rejtett állapot ($h_{t-1}$) oldalról érkezik be a dobozba a jelenlegi számításhoz ($h_t$).
+<img width="460" height="712" alt="4" src="https://github.com/user-attachments/assets/18ece8f2-7b7a-4972-914c-2538856278e5" />
+
+
+>  Ez az ábra azt mutatja be, ahogy a hálózatot "kigöngyöljük" (unfold) az időben. Látszik rajta az $x_t$ bemenet, és ahogy a rejtett állapot ($h_{t-1}$) oldalról érkezik be a dobozba a jelenlegi számításhoz ($h_t$).
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/06%20Fejezet/RNNUnrollingThroughTime.html)
 
 ### Az RNN Két Végzetes Hibája
 
@@ -271,3 +283,5 @@ A képlet: $0 \cdot \text{Új} + 1 \cdot \text{Régi} \rightarrow$ A memória é
 ### Miért oldja meg ez az Eltűnő Gradienst?
 
 Mivel a régi memória ($\mathbf{h}_{t-1}$) egy egyszerű összeadással ($+$) van bekötve, és meg is tartható érintetlenül ($1 \cdot$ Régi), a funkció egy szimpla identitás-függvény ($f(x) = x$). Az identitás függvény deriváltja fixen $1$. Így a gradiens (a hibaüzenet) veszteség nélkül, akadálytalanul tud visszaszaladni az időben, egészen a mondat legelső szaváig!
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/06%20Fejezet/GRUCellUpdateGateMechanism.html)
