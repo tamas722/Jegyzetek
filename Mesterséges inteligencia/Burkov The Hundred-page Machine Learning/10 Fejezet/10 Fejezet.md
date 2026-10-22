@@ -79,6 +79,8 @@ A **LambdaMART** algoritmus Gradiens Boostingot (fák sorozatát, lásd 7. fejez
 
 **A zseniális trükk:** A Gradiens Boostingnál a hibát (a fák módosítási irányát, a gradienst) módosítják egy speciális szorzóval. Ha két weboldal sorrendjének felcserélése drasztikusan rontana a MAP metrikán, akkor az algoritmus "hatalmas gradienst" (büntetést) számol, így a gép sokkal jobban fog fókuszálni azokra a cserékre, amik a lista legtetején vannak!
 
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/10%20Fejezet/LearningtoRank(LTR)Comparison.html)
+
 > *(A "Learning to Rank" a mai modern e-kereskedelem (Amazon), streaming szolgáltatások (Netflix) és keresőmotorok (Google) egyik legfontosabb gépi tanulási eszköze. A LambdaMART algoritmust az e-kereskedelemben a mai napig nagyon széles körben alkalmazzák).*
 >
 > ## 10.3 Ajánlórendszerek (Learning to Recommend)
@@ -129,6 +131,8 @@ f(x) = b + \sum_{i=1}^{D} w_i x_i + \sum_{i=1}^{D} \sum_{j=i+1}^{D} (\mathbf{v}_
 **Mi történt itt?** A gigantikus, betaníthatatlan $w_{i,j}$ súlymátrixot helyettesítettük a két pici látens vektor skaláris szorzatával ($\mathbf{v}_i \cdot \mathbf{v}_j$). A paraméterek száma $D(D-1)$ helyett mindössze $D \times k$ lett ($D \times k \ll D^2$).
 
 A gép így villámgyorsan megtanulja az összefüggéseket (az üres nullákat ignorálva), és kiválóan meg tudja jósolni, hány csillagot adnál egy filmre!
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/10%20Fejezet/FactorizationMachines(FM).html)
 
 #### 10.3.2 Zajszűrő Autoenkóderek (Denoising Autoencoders - DAE)
 
@@ -191,6 +195,13 @@ A modell valójában egy nagyon egyszerű, egyetlen rejtett réteggel rendelkez�
 
 A gép hetekig olvassa a Wikipédiát, állítgatja a 300 neuront (a súlyokat) a **Negatív Log-Likelihood** költségfüggvény alapján, míg végül a szűkületben kialakul egy tökéletes, matematikailag értelmezhető szótár. Ezt a 300 dimenziós szótárat utána bárki letöltheti, és használhatja a saját NLP (Natural Language Processing) projektjeihez.
 
-> 📍 **[KÉP HELYE: IDE JÖN A 2. ÁBRA (10. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 2: The skip-gram model* ábrájának. Ez mutatja bal oldalon a központi szó $10\,000$ méretű One-Hot vektorát (Bemenet), középen a szűk $300$ méretű Beágyazó réteget, jobb oldalon pedig a 4 darab $10\,000$ méretű kimeneti vektort (a kontextus szavakat, amiket a gép megpróbál eltalálni).
+<img width="587" height="567" alt="2" src="https://github.com/user-attachments/assets/50782b63-992e-43d3-9f12-b49718808558" />
+
+
+>  Ez mutatja bal oldalon a központi szó $10\,000$ méretű One-Hot vektorát (Bemenet), középen a szűk $300$ méretű Beágyazó réteget, jobb oldalon pedig a 4 darab $10\,000$ méretű kimeneti vektort (a kontextus szavakat, amiket a gép megpróbál eltalálni).
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/10%20Fejezet/Word2VecSkip-GramArchitecture.html)
+
+## Végül a sebesség (Hierarchikus Softmax)
+
+A könyv utolsó bekezdése megjegyzi: egy 10 000 (vagy valójában inkább 1 millió) méretű szótáron futtatni a Softmax függvényt minden egyes szónál pokolian lassú. A Google mérnökei zseniális trükköket találtak ki ennek gyorsítására: a Negatív Mintavételezést (Negative Sampling) (ahol nem az összes szót büntetik, csak kiválasztanak 5 random "rossz" szót) és a Hierarchikus Softmaxot (ami az 1 millió szót egy bináris fába rendezi, így 1 millió számolás helyett csak 20 lépés kell az elágazásokon).
