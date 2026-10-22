@@ -17,9 +17,10 @@ Az algoritmusok célja az összesített hiba (költség) minimalizálása. Mivel
 
 **Eredmény:** A gép látszólag zseniális ($99.9\%$ pontosság), a valóságban viszont teljesen használhatatlan, mert egyetlen csalót sem fog meg.
 
-> 📍 **[KÉP HELYE: IDE JÖN AZ 1. ÁBRA (8. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 1* ábrájának. Az (a) részen látszik, ahogy az SVM egyenese "beáldozza" a kevés fekete pontot (csalókat), hogy a sok fehér pontot megmentse. A (b) részen a vonal elmozdul, megvédve a fekete pontokat, cserébe pár fehér pont rossz oldalra kerül.
+<img width="627" height="263" alt="1" src="https://github.com/user-attachments/assets/d95faf89-5b85-4989-8f5c-1cf1d8c653c5" />
+
+
+> Az (a) részen látszik, ahogy az SVM egyenese "beáldozza" a kevés fekete pontot (csalókat), hogy a sok fehér pontot megmentse. A (b) részen a vonal elmozdul, megvédve a fekete pontokat, cserébe pár fehér pont rossz oldalra kerül.
 
 ### A Megoldások (Hogyan kényszerítsük a gépet a munkára?)
 
@@ -31,6 +32,11 @@ A legkézenfekvőbb megoldás matematikai. Megmondjuk az SVM-nek, hogy a hibák 
 
 - Ha egy normál tranzakciót (Többség) elrontasz, a büntetésed: $1$ pont.
 - Ha egy csalást (Kisebbség) elrontasz, a büntetésed: $1000$ pont.
+
+A gép azonnal pánikba esik, és a döntési határt (a hipersíkot) eltolja úgy, hogy mindenáron a kisebbségi osztályt védje (ahogy a könyv (b) ábráján látszik), még akkor is, ha emiatt több normál tranzakciót fog tévesen gyanúsnak jelölni (nő a False Positive arány).
+(Programozásban a Scikit-Learn könyvtárban ezt az algoritmusok class_weight='balanced' paraméterével tudod egyetlen kattintással bekapcsolni).
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/08%20Fejezet/SVMClassWeightingDynamics.html)
 
 - #### 2. Alulmintavételezés (Undersampling)
 
@@ -69,11 +75,10 @@ Erre két híres algoritmus létezik: a **SMOTE** (Synthetic Minority Over-sampl
 
 Az ADASYN egy picit okosabb. Szintén ezt a képletet használja, de nem egyenletesen generál új pontokat. Megnézi, hogy a kisebbségi (csaló) adatokat mennyire veszik körbe a többségi (normál) adatok. Ahol nagyon "sűrű" a többségi ellenség, ott több új szintetikus adatot generál, hogy "megerősítse" a védvonalat.
 
-A gép azonnal pánikba esik, és a döntési határt (a hipersíkot) eltolja úgy, hogy mindenáron a kisebbségi osztályt védje (ahogy a könyv (b) ábráján látszik), még akkor is, ha emiatt több normál tranzakciót fog tévesen gyanúsnak jelölni (nő a False Positive arány).
 
-> *(Programozásban a Scikit-Learn könyvtárban ezt az algoritmusok `class_weight='balanced'` paraméterével tudod egyetlen kattintással bekapcsolni).*
->
-> ## 8.2 Modellek kombinálása (Combining Models)
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/08%20Fejezet/SMOTEVisualizer.html)
+
+ ## 8.2 Modellek kombinálása (Combining Models)
 
 Az előző fejezetben láttuk az Ensemble algoritmusokat (pl. Véletlen Erdő), amelyek rengeteg ugyanolyan, gyenge modellt kombinálnak. De mi van akkor, ha van 2 vagy 3 különböző, nagyon erős modelled (pl. egy csúcsra járatott SVM és egy mély Neurális Hálózat)?
 
@@ -104,6 +109,8 @@ Ahelyett, hogy te találnád ki a szavazás szabályait, építesz egy új gépi
 A Meta-modell képes megtanulni olyan finomságokat, mint: *"Ha a Random Forest nagyon biztos magában, neki hiszek. De ha a Random Forest bizonytalan, az SVM viszont jelez, akkor az SVM-nek van igaza."*
 
 > **A Szent Szabály:** Ezek a kombinációk kizárólag akkor működnek, ha az alapmodellek **nem korrelálnak**! Ha beteszel három szinte egyforma SVM-et, ugyanazokon az adatokon fognak tévedni, így a szavazásuk semmit nem ér. Egy SVM-et és egy Random Forest-et (amelyek matematikája gyökeresen eltérő) sokkal jobban megéri kombinálni.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/08%20Fejezet/StackingEnsembleArchitecture.html)
 
 ---
 
@@ -136,7 +143,9 @@ Hány réteg és hány neuron kell? Ezt nem lehet előre kiszámolni. Ezt egy "H
 4. **Regularizálj:** Alkalmazz L1/L2 regularizációt, Dropout-ot (8.4-es rész) vagy Batch Normalizációt.
 5. **Ismételj:** A regularizációtól a hálózat kicsit "lebutul". Ha már a tanító adatokon is rossz lett, növeld megint egy picit a méretét. Ezt az egyensúlyozást folytatod, amíg a Tanító és a Validációs hiba is egyszerre alacsony nem lesz!
 
-6. ## 8.4 Haladó Regularizáció (Advanced Regularization)
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/08%20Fejezet/Sizing&RegularizationWorkflow.html)
+
+ ## 8.4 Haladó Regularizáció (Advanced Regularization)
 
 Ahogy azt az 5. fejezetben láttuk, a sima L1 és L2 regularizáció nagyon hasznos a túltanulás ellen, de a mély neurális hálózatok (Deep Neural Networks) esetén a mérnökök kitaláltak néhány zseniális, kifejezetten hálózat-specifikus módszert is.
 
@@ -150,6 +159,8 @@ Minden egyes alkalommal, amikor a hálózat megpróbál feldolgozni egy képet a
 > **A metafora:** Képzelj el egy céget, ahol minden nap véletlenszerűen a dolgozók $20\%$-a otthon marad. A bent lévő dolgozók kénytelenek megtanulni a hiányzók munkáját is, így senki nem tud túlságosan "túl-specializálódni" egyetlen apró, marginális feladatra. Ha mindenki bent van (éles tesztelésnél a Dropout mindig kikapcsol!), a cég hihetetlenül stabil és okos lesz.
 
 **Gyakorlatban:** A Dropout érték egy $0$ és $1$ közötti hiperparaméter (pl. $0.5$ azt jelenti, hogy a neuronok felét "kiütjük" az adott körben). Ezt a Validációs halmazon kísérletezve kell belőni.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/08%20Fejezet/NeuralNetworkDropoutVisualizer.html)
 
 ### 2. Köteg Normalizáció (Batch Normalization)
 
@@ -168,6 +179,8 @@ A Gradiens Ereszkedésnél láttuk, hogy ahogy pörögnek a körök (Epoch-ok), 
 A Korai Leállítás lényege, hogy minden egyes Epoch végén elmentjük a modellt egy fájlba (Checkpoint / Ellenőrzőpont), és leteszteljük a Validációs halmazon.
 
 Amikor azt látjuk, hogy a Tanító hiba még mindig csökken, de a Validációs hiba elkezd ismét felfelé ívelni (ami a túltanulás egyértelmű jele), egyszerűen leállítjuk a betanítást, és betöltjük azt a korábbi modellt, ahol a validációs hiba a legalacsonyabb volt (a "U" betű alja).
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/08%20Fejezet/EarlyStoppingVisualizer.html)
 
 ---
 
@@ -246,6 +259,8 @@ A Backpropagation (hibavisszaterjesztés) csak egyetlen hibaszámot tud minimali
 
 Ha $\alpha = 0.5$, akkor a gépnek ugyanolyan fontos megtalálni a pontos koordinátát, mint eltalálni, hogy mi van ott. Ezt az $\alpha$ értéket (hogy melyik feladat a "fontosabb") a Validációs halmazon kísérletezve kell beállítanod.
 
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/08%20Fejezet/Multi-OutputNeuralNetwork.html)
+
 ---
 
 ## 8.7 Transzfer Tanulás (Transfer Learning)
@@ -267,6 +282,8 @@ Ezt a hatalmas, meglévő tudást átültetjük (Transfer) a mi apró problémá
 4. **Finomhangolás (Fine-tuning):** Most ráereszted a hálózatra a te kicsi, $500$ képes Háziállat adathalmazodat. Mivel a régi rétegek fagyasztva vannak, kizárólag az a pici, legutolsó, általad betett új réteg fog tanulni.
 
 Mivel csak egy apró réteget kell tanítani, ez percek alatt lefut egy átlagos laptopon is, mégis egy olyan szuper-intelligens AI-t kapsz a végén, mintha 14 millió képed lett volna!
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/08%20Fejezet/TransferLearningArchitecture.html)
 
 ### Extra Tipp: Wikipedia a megmentő (Szöveges Transzfer Tanulás)
 
@@ -326,6 +343,8 @@ def find_max_distance(S):
 ### A Big Data kora
 
 Elméletben mindkettő polinom idő alatt fut le, tehát "hatékonynak" számítanak. A gyakorlatban viszont, ha 1 milliárd adatod van (Big Data), az $O(N^2)$ algoritmus $1\,000\,000\,000\,000\,000\,000$ (egy kvintillió) műveletet jelent. A géped hetekig fog fagyni. A Nagy Adatok korában a hatékony algoritmus nem luxus, hanem alapkövetelmény.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/08%20Fejezet/BigOTimeComplexityVisualizer.html)
 
 ---
 
