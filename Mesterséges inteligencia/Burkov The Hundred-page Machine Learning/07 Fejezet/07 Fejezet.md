@@ -37,9 +37,12 @@ Ez határozza meg, hogy mennyire "messzire" lát a kernel:
 - Ha $b$ kicsi, csak a közvetlen szomszédok számítanak. A görbe minden pontra rá fog ugrani $\rightarrow$ **Túltanulás (Overfit)**.
 - Ha $b$ nagy, minden pont (még a távoliak is) beleszól az átlagba. A görbe kisimul, de lehet, hogy túl merev lesz $\rightarrow$ **Alulillesztés (Underfit)**.
 
-> 📍 **[KÉP HELYE: IDE JÖN AZ 1. ÁBRA (7. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 1* ábrájának. Ez a klasszikus 3 paneles kép, ami bemutatja a Kernel regressziót három különböző $b$ értékkel (Jó illeszkedés / Enyhe túltanulás / Erős túltanulás).
+<img width="641" height="221" alt="1" src="https://github.com/user-attachments/assets/b48ede9a-ad0f-422b-a838-72277825858f" />
+
+
+>  Ez a klasszikus 3 paneles kép, ami bemutatja a Kernel regressziót három különböző $b$ értékkel (Jó illeszkedés / Enyhe túltanulás / Erős túltanulás).
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/07%20Fejezet/KernelRegressionSmoothing.html)
 
 ### 🔢 Számpélda: Kernel Regresszió a gyakorlatban
 
@@ -96,6 +99,8 @@ d = \frac{\mathbf{w}^* \cdot \mathbf{x} + b^*}{\|\mathbf{w}\|}
 
 A legmesszebb lévő távolság adja a győztes osztályt!
 
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/07%20Fejezet/One-vs-Rest(OvR)Strategy.html)
+
 ## 7.3 Egyosztályos Osztályozás (One-Class Classification)
 
 A hagyományos gépi tanulásban a gép úgy tanul meg dönteni, hogy kap pozitív és negatív példákat is (pl. képeket kutyákról és képeket macskákról).
@@ -146,9 +151,12 @@ A tanító adatok alapján a gép megtanulja, hogy a normális hőmérséklet á
 **A Küszöbérték (Threshold):**
 Neked, a mérnöknek kell beállítanod egy határt (threshold). Például: *"Ha a kiszámolt $f_{\mu, \Sigma}(\mathbf{x})$ valószínűség kisebb, mint $0.01$ (azaz 1%), akkor dobd ki anomáliaként!"* Ez általában kísérletezés kérdése.
 
-> 📍 **[KÉP HELYE: IDE JÖN A 2. ÁBRA (7. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 2* ábrájának. A bal oldalán 2D-s kék pontok láthatók (ezek a normál adatok), a jobb oldalán pedig egy ezekre ráillesztett 3D-s haranggörbe (a Többváltozós Normál Eloszlás).
+<img width="578" height="285" alt="2" src="https://github.com/user-attachments/assets/d451c80d-d914-4aab-a08f-20962b1cb4ab" />
+
+
+>  A bal oldalán 2D-s kék pontok láthatók (ezek a normál adatok), a jobb oldalán pedig egy ezekre ráillesztett 3D-s haranggörbe (a Többváltozós Normál Eloszlás).
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/07%20Fejezet/3DGaussianAnomalyDetector.html)
 
 ---
 
@@ -193,6 +201,8 @@ Ha van egy "Fotó / Festmény" és egy "Portré / Táj / Egyéb" címkéd, létr
 - **Előnye:** Megtanulja, hogy a címkék hogyan viszonyulnak egymáshoz (pl. a "Spam" ritkán "Kiemelt fontosságú").
 - **Hátránya:** Ha sok a címke, az osztályok száma felrobban (kombinatorikus robbanás), és hihetetlen mennyiségű tanító adatra lesz szükséged.
 
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/07%20Fejezet/ActivationLogicVisualizer.html)
+
 ---
 
 ## 7.5 Együttes Tanulás (Ensemble Learning)
@@ -233,8 +243,10 @@ Gondolj a Gradiens Ereszkedésre a 4. fejezetből! Ott a gradienseket (derivált
 Itt a **Maradékok (Residuals)** pontosan a **Gradiens** szerepét töltik be! Megmutatják, milyen irányba (milyen fával) kell kiegészíteni a modellt, hogy a végső Költségfüggvény (MSE) közelebb kerüljön a minimumhoz. Míg a Bagging a **Varianciát** (túltanulást) csökkenti, a Boosting a **Torzítást** (Bias / alulillesztést) támadja meg és csökkenti. (Bár túl sok fával a Boosting túl tud tanulni).
 
 > *(A könyv röviden kitér a Klasszifikációs Boostingra is, ahol a folyamat hasonló, de ott MSE helyett a Maximális Valószerűséget / Log-Likelihood-ot optimalizáljuk, a fákat pedig a Szigmoid függvény deriváltjaiból építjük).*
->
-> ## 7.6 Szekvenciák címkézése (Learning to Label Sequences)
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/07%20Fejezet/Baggingvs.BoostingArchitecture.html)
+
+## 7.6 Szekvenciák címkézése (Learning to Label Sequences)
 
 A világunk tele van szekvenciákkal. A kommunikáció (szöveg), a DNS (génszekvenciák) vagy egy videó mind egymás után következő elemek sorozata.
 
@@ -280,9 +292,12 @@ A Decoder egy másik hálózat, ami kizárólag ezt a tömörített Embedding ve
 
 Kap egy speciális `<start>` jelet, és elkezdi generálni az első francia szót. Ezt az első szót visszatáplálja saját magába, generálja a másodikat, és így tovább, amíg ki nem köp egy `<end>` (vége) jelet.
 
-> 📍 **[KÉP HELYE: IDE JÖN A 4. ÁBRA (7. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 4: A traditional seq2seq architecture.* ábrájának. Ez azt mutatja be, ahogy a 4 angol szó bemegy a zöld dobozokba (Encoder), amik a végén átadnak egyetlen vastag nyilat a piros dobozoknak (Decoder), hogy abból 3 francia szó szülessen.
+<img width="597" height="290" alt="4" src="https://github.com/user-attachments/assets/a6a9f2b8-e68a-4c94-a397-89b61a9788b5" />
+
+
+>  Ez azt mutatja be, ahogy a 4 angol szó bemegy a zöld dobozokba (Encoder), amik a végén átadnak egyetlen vastag nyilat a piros dobozoknak (Decoder), hogy abból 3 francia szó szülessen.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/07%20Fejezet/Encoder-DecoderRNNSequenceFlow.html)
 
 ### Az Információs Szűkület (Bottleneck) Problémája
 
@@ -299,11 +314,13 @@ Amikor a Decoder próbálja kitalálni a megfelelő francia szót (pl. a 3. idő
 
 Amikor a *"beau"* (szép) szót kell generálnia, a mechanizmus a *"fine"* szóra fog a legmagasabb "figyelem-súllyal" (attention weight) fókuszálni, a *"The"*-t pedig szinte teljesen ignorálja.
 
-> 📍 **[KÉP HELYE: IDE JÖN AZ 5. ÁBRA (7. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 5* ábrájának, ami a seq2seq attention architektúrát mutatja. Ezen a rajzon már nem csak egyetlen összekötő nyíl van, hanem a Decoder minden egyes lépésénél nyilak (kapcsolatok) mutatnak vissza az Encoder összes korábbi állapotához.
->
-> ## 7.8 Aktív Tanulás (Active Learning)
+<img width="571" height="307" alt="5" src="https://github.com/user-attachments/assets/c9a4dd25-64f7-4179-9554-ad5c5cbc8eb4" />
+
+>Ezen a rajzon már nem csak egyetlen összekötő nyíl van, hanem a Decoder minden egyes lépésénél nyilak (kapcsolatok) mutatnak vissza az Encoder összes korábbi állapotához.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/07%20Fejezet/AttentionMechanismAlignment.html)
+
+ ## 7.8 Aktív Tanulás (Active Learning)
 
 A felügyelt tanulás legnagyobb rákfenéje, hogy az adatok "címkézése" nagyon drága. Ha millió orvosi röntgenfelvételed van, nem ültethetsz le elé egy főorvost hetekre, hogy mindegyikre ráírja: *"Rákos"* vagy *"Egészséges"*.
 
@@ -332,9 +349,10 @@ Ez egy olyan neurális hálózat, ami homokóra alakú.
 
 A gépnek nincs szüksége "Kutya/Macska" címkére. Egyszerűen ráereszted 1 millió képre, ő pedig megtanulja az $x$ bemenetet $x$-ként visszaadni. Mivel a középső réteg szűkös, a gép kénytelen megérteni a kép lényegét (pl. a fülformákat, szőrt), és azt egy tömör **Beágyazásba (Embedding)** menteni.
 
-> 📍 **[KÉP HELYE: IDE JÖN A 6. ÁBRA (7. FEJEZET)]**
->
-> Itt kell szerepelnie a könyv *Figure 6: Autoencoder.* ábrájának. Ez egy olyan neurális hálót ábrázol, ami középen nagyon elvékonyodik (bottleneck / embedding layer), majd újra kiszélesedik.
+<img width="582" height="332" alt="6" src="https://github.com/user-attachments/assets/4ca10973-06a5-4e2b-8cef-d369c39cf26c" />
+
+
+>  Ez egy olyan neurális hálót ábrázol, ami középen nagyon elvékonyodik (bottleneck / embedding layer), majd újra kiszélesedik.
 
 ### A Létra Hálózat (Ladder Network)
 
@@ -372,6 +390,8 @@ Mind a három képet átengedjük a hálózaton, és kapunk róluk egy-egy vekto
 > *(Az $\alpha$ egy kötelező margó: a gépnek nem elég csak kicsit távolabb tolnia a rossz arcot, legalább $\alpha$ távolságra el kell löknie magától).*
 
 Amikor megveszed a telefont, az arc-hálózat már kész. Bepillantasz a kamerába (ez az 1 db kép, azaz az 1 lövés / One-Shot), a telefon csinál rólad egy vektort, és elmenti. Holnap bepillantasz megint, csinál egy új vektort, megnézi a távolságot a tegnapi vektortól, és mivel ez az érték kicsi, beenged. Ha én próbálom feloldani, az én arcom vektora hatalmas távolságra lesz a tiédtől, és kizár.
+
+👉 [Kattints ide az interaktív HTML widget megtekintéséhez]( https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Mesters%C3%A9ges%20inteligencia/Burkov%20The%20Hundred-page%20Machine%20Learning/07%20Fejezet/TripletLossEmbeddingSpace.html)
 
 ---
 
