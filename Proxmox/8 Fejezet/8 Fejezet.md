@@ -146,3 +146,91 @@ Rendkívül kényes művelet. A `ceph.conf`-ban át kell írni a `public_network
 - Valós idejű állapot: `watch ceph --status`
 - Ceph összeomlások (**crashek**) olvasása: `ceph crash ls`, majd archiválásuk (hogy eltűnjön a hibaüzenet a GUI-ról): `ceph crash archive-all`.
 - Ha egy OSD offline-nak tűnik, de a lemez amúgy egészséges, újra lehet aktiválni: `ceph-volume lvm activate --all`.
+
+## Hálózat és MTU tesztelés
+
+**Mesh hálózat:** 3-5 node-os kisebb clusterek esetén, ha nincs 10+ Gbps switch, a fizikai hálózati kártyák közvetlen összekötése (**Mesh network**) is hivatalosan támogatott opció a Ceph számára.
+
+**Ping teszt Jumbo Frame-mel:** Hálózatcsere esetén az MTU (pl. 9000) helyes működését IP+ICMP overhead kalkulálásával kell tesztelni. 9000-es MTU esetén IPv4-nél **8972 byte** (`ping -M do -s 8972 <IP>`), IPv6-nál **8952 byte** csomagmérettel.
+
+**IPv6 beállítások:** Ha IPv4-ről IPv6-ra váltasz (vagy fordítva), a `ceph.conf`-ban kötelezően módosítani kell az `ms_bind_ipv4` és `ms_bind_ipv6` változókat `true` vagy `false` értékre.
+
+## 2. OSD Létrehozás (DB/WAL) és Filestore
+
+**DB/WAL méretezés fallback logikája:** Ha NVMe/SSD gyorsítótárat adsz egy HDD-hez, de nem specifikálod a `-db_size` vagy `-wal_size` méreteket, a Ceph a következő sorrendben keresi a méreteket:
+
+1. `ceph.conf` OSD szekció,
+2. `ceph.conf` Global szekció,
+3. Alapértelmezett beállításként a lemez méretének **10%-a** a DB-nek, **1%-a** a WAL-nak.
+
+**Filestore:** Bár a Nautilus óta a Bluestore az alapértelmezett, a régi Filestore alapú OSD is létrehozható maradt, de már nem a `pveceph` paranccsal, hanem közvetlenül a háttér-eszközzel:
+
+```bash
+ceph-volume lvm create --filestore --data /dev/sd[X] --journal /dev/sd[Y]
+```
+
+## 3. Titkosított OSD Lockbox Kulcsok
+
+> **Veszély:** Minden titkosított OSD használ egy dedikált `client.osd-lockbox.<uuid>` felhasználót a lemez titkosítási kulcsának lekéréséhez. Ezt a kulcsot **soha nem szabad** a normál `ceph auth` paranccsal rotálni, mert a lemez LVM tag-jét és a Ceph adatbázist egyszerre kell frissíteni. Erre kizárólag a PVE beépített migrációs eszköze alkalmas.
+
+## 4. Ceph Konfigurációs Hierarchia
+
+**Felülbírálás:** Ha a `ceph config set` paranccsal beállítasz egy értéket a MON adatbázisában, de az az opció szerepel a lokális `ceph.conf` fájlban is, a **lokális fájl felülbírálja a központit** (a MON DB-nek alacsonyabb a prioritása).
+
+## 5. Pool és Erasure Coding extra részletek
+
+**Pool opciók:** A GUI/CLI létrehozásnál olyan extrák is megadhatók, mint:
+
+- **Target Ratio** (adatok elvárt aránya a többi poolhoz képest),
+- **Target Size** (elvárt méret gigabájtban),
+- **Min. # of PGs** (az autoscaler nem vonhatja össze a PG-ket ezen érték alá).
+
+**EC Pool matek:** Az Erasure Coded poolok `min_size` értéke így alakul:
+
+- ha $m=1$, akkor a `min_size` megegyezik $k$-val,
+- ha $m>1$, akkor $min\_size = k+1$.
+
+(A dokumentáció hivatalosan a $k+2$-t ajánlja biztonsági okokból).
+
+**EC Pool csatolása PVE Storage-ként:** Mivel az EC pool mellé létrejön egy kötelező metaadat pool is, a Proxmox tárhelyhez történő hozzáadásakor kötelező a `--data-pool` kapcsoló használata:
+
+```bash
+pvesm add rbd <name> --pool <meta_pool> --data-pool <data_pool>
+```
+
+## 6. PG Autoscaler és CRUSH összefüggések
+
+**Autoscaler limit:** A PG autoscaler alapértelmezetten csak akkor avatkozik be, ha a tényleges PG szám **3-szorosan** eltér az optimálistól. Mivel ez a beavatkozás masszív adatmozgatással jár, érdemes előre beállítani a **Target Size**-t.
+
+**CRUSH inkompatibilitás:** Az autoscaler csak akkor tudja méretezni a poolokat, ha az összes pool ugyanolyan típusú CRUSH szabályt használ (pl. vagy mindegyiknél van megadva **Device Class**, vagy egyiknél sem). Kevert szabályok esetén az autoscaler átugorja a hibás poolokat.
+
+## 7. CephFS mélyebb opciók
+
+**Multiple Active MDS:** A Luminous verziótól kezdve lehetséges több aktív Metaadat-szervert futtatni egyszerre. Ez csak extrém mennyiségű, párhuzamosan író/olvasó kliens esetén szükséges, mert az MDS ritkán szűk keresztmetszet.
+
+**CephFS struktúra:** A `pveceph fs create` parancs a háttérben két poolt hoz létre:
+
+- `cephfs_data` poolt (alapból 128 PG-vel),
+- `cephfs_metadata` poolt (aminek a PG száma mindig a data pool negyede, jelen esetben 32).
+
+**Törlés kapcsoló:** A fájlrendszer törlésekor a `--remove-storages` kapcsolóval érhető el, hogy a `storage.cfg`-ből is eltűnjön a bejegyzés.
+
+## 8. Karbantartás és Hibaelhárítás extrák
+
+**Egészségügyi riasztás tartós némítása:** A `ceph health mute <név>` parancsnál a `--sticky` (GUI-n: **Keep Mute**) kapcsoló használatával elérhető, hogy a riasztás némítva maradjon akkor is, ha a probléma súlyosbodik (pl. egy újabb OSD esik ki ugyanazzal a hibával).
+
+**Alapvető logok:** Mélyebb diagnosztikához a `/var/log/ceph/` könyvtár és a rendszernapló szükséges:
+
+```bash
+journalctl --since "2 days ago"
+```
+
+## 9. Kulcs rotáció (CVE-2025-30156) teljes menete
+
+Az előző jegyzet csak a cluster-keys forgatását említette, de a felhasználói és tárolókulcsok migrálása egy sokkal komplexebb, több lépcsős folyamat:
+
+1. **Kliens kompatibilitás ellenőrzése:** A CephFS és az LXC RBD mountok a Linux kernel klienst használják. Az `aes256k` titkosításhoz kötelezően legalább **7.0-s Linux kernel** kell a szerveren!
+2. **Kulcsok ideiglenes felvétele (Staging):** A tárolókulcsok frissítését a `--rotate-all-storage-keys --rotate-admin-key` kapcsolókkal kell elindítani. Ez "stage"-eli az új kulcsot, de a régit is érvényben hagyja, amíg a kliensek frissülnek.
+3. **Kliensek újraolvastatása:** A futó VM-eket élőben migrálni kell, vagy teljesen leállítani és elindítani. A sima újraindítás (`guest reboot`) **nem elég** a kulcs újraolvasásához! A konténereket le kell állítani, majd újraindítani.
+4. **Megerősítés vagy Visszagörgetés:** Ha minden kliens átállt, a `--confirm-all-clients-refreshed` kapcsolóval lehet véglegesíteni a folyamatot. Ha baj van, a `--abort-staged-key` paranccsal vonható vissza az új kulcs.
+5. **Emergency Override:** Ha kizárod magad a rendszerből, a `ceph.conf`-ban a `mon_auth_emergency_allowed_ciphers` ideiglenes beállításával nyerhetsz vissza hozzáférést a régi kulcsokkal.
