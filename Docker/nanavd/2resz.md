@@ -426,3 +426,4 @@ Ha Junior/Medior DevOps, Cloud vagy Platform Engineer pozícióra pályázol, a 
 | **4. Konténer-orkesztráció** | Kubernetes (K8s / K3s), Helm, Kustomize | Konténerek tucatjainak automatikus elosztása több szerver (Node) között, öngyógyítás (Self-healing), automatikus skálázás, terheléselosztás (Service/Ingress) és leállásmentes frissítés (Rolling Update). |
 | **5. GitOps (Continuous Delivery)** | ArgoCD, Flux | A Kubernetes klaszter kívánt állapotát egy Git repository-ban tároljuk. Az ArgoCD figyeli a Git-et, és automatikusan szinkronizálja a klasztert a Git-ben lévő YAML/Helm leírókkal. |
 
+ [Docker & OCI Rendszerarchitektúra](https://rawcdn.githack.com/tamas722/Jegyzetek/refs/heads/main/Docker/nanavd/interactive.html)
