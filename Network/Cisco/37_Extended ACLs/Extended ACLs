@@ -1,0 +1,179 @@
+# CCNA Bővített Jegyzet – 37. Lecke: Extended ACLs (Kiterjesztett Hozzáférés-vezérlési Listák)
+
+Ebben a leckében folytatjuk a biztonsági szabályok (ACL-ek) tanulmányozását. Miután a 36. leckében megismertük az "együgyű" Standard ACL-eket (amik csak a Forrás IP-t nézik), most rátérünk az "intelligens" **Extended (Kiterjesztett) ACL**-ekre. Ezekkel már nem csak azt szabályozhatjuk, hogy **KI** küld csomagot, hanem azt is, hogy **KINEK**, és **MILYEN CÉLBÓL** (Milyen protokollon / Porton). Megnézzük a sorszámozott ACL-ek modern (Named módban történő) szerkesztését és a lista átsorszámozását is.
+
+## 1. Számozott ACL-ek modern szerkesztése és a Resequence (Átsorszámozás)
+
+A korábbi videóban láttuk, hogy ha Globális Konfigurációs módból (pl. `access-list 1 deny...`) írunk be egy szabályt, és később kiadjuk rá a `no access-list 1 deny...` parancsot, a Cisco router nem csak azt az egy sort törli ki, hanem **letörli a teljes 1-es ACL-t az összes többi szabállyal együtt!** Emiatt régen egy ACL javításához le kellett törölni az egészet, és nulláról újraírni.
+
+### A Megoldás: Számozott ACL-ek szerkesztése "Named" (Nevesített) módban
+
+Modern routereken egy Számozott ACL-t is megnyithatsz a "Named" mód menüjében!
+
+```text
+Router(config)# ip access-list standard 1
+Router(config-std-nacl)# no 30
+```
+
+Így belépsz az 1-es lista almenüjébe, és a `no 30` paranccsal elegánsan kitörlöd a 30-as sorszámú (Sequence Number) bejegyzést anélkül, hogy a többi törlődne. Sőt, be is szúrhatsz újat (pl. a `15 permit 10.0.0.0...` paranccsal) a 10-es és a 20-as szabály közé!
+
+### Az ACL Átsorszámozása (Resequence)
+
+Mi történik, ha egy junior mérnök "egyesével" számozza be az ACL-t (1, 2, 3, 4, 5)? Ilyenkor képtelenség bármit is beszúrni közéjük. A Cisco erre találta ki a `resequence` parancsot.
+
+```text
+Router(config)# ip access-list resequence 1 10 10
+```
+
+**Magyarázat:** Az `1` a szerkesztendő ACL száma. Az első `10` a legelső szabály **ÚJ kezdő sorszáma**. A második `10` az **inkrementum** (hogy mennyivel nőjön a szám soronként). Eredmény: A lista 10, 20, 30, 40, 50-re sorszámozódik át, megmentve minket. (Ez Standard és Extended, Named és Numbered ACL-eken egyaránt működik).
+
+## 2. Az Extended ACL-ek (Kiterjesztett Listák)
+
+Az Extended ACL a hálózatbiztonság svájci bicskája. Segítségével blokkolhatsz egyetlen PC-t attól, hogy FTP-vel letöltsön egy adott szerverről, miközben mindenki más, és minden más protokoll átmehet.
+
+**A Vizsgán Kötelezően Memorizálandó Számtartományok (Extended ACL):**
+
+- `100 - 199`
+- `2000 - 2699`
+
+### Az Extended ACL Aranyszabálya (Elhelyezés)
+
+Mivel az Extended ACL nagyon pontos (Képes szűrni Forrást, Célállomást és Portot is), a lehető **legközelebb kell tenni a Forráshoz (Source)!** Így a router már a küldés pillanatában eldobja a tiltott csomagot, és nem pazarolja a hálózat (a linkek és a többi router) sávszélességét egy olyan csomag szállítására, amit a túloldalon úgyis eldobnának.
+
+## 3. Extended ACL Konfiguráció
+
+Az Extended ACL szintaxisa hosszú, mert sok mindent meg kell adni. Általános képlet:
+
+`(Sorszám) permit/deny [Protokoll] [Forrás IP / Maszk] [Forrás Port] [Cél IP / Maszk] [Cél Port]`
+
+### 3.1. Protokoll (Protocol) Kiválasztása
+
+A `permit/deny` után meg kell adni a Layer 4 (vagy Layer 3) protokollt.
+
+- `tcp`, `udp`, `icmp` (Pingeléshez), `ospf` (Az OSPF metódus szűréséhez).
+- `ip`: Ha az `ip`-t választod, az **MINDEN** csomagra ráillik, ami IP fejlécet használ (Tehát a TCP, UDP és ICMP is beleértendő!). Ezt használjuk a `permit ip any any` "Mindent engedélyez" szabálynál.
+
+> (Kvíz trivia: A protokollokat név helyett az IPv4 Header-ből ismert Protokoll Számmal is megadhatod: `1`=ICMP, `6`=TCP, `17`=UDP, `88`=EIGRP, `89`=OSPF).
+
+### 3.2. Cél- és Forrás IP Címek
+
+Ugyanaz a logika, mint a Standard ACL-nél (Host, Any, vagy Wildcard Maszk). De itt **előbb a Forrást (Source), majd a Célállomást (Destination)** kell megadni!
+
+### 3.3. Layer 4 Portok Kiválasztása (Opcionális)
+
+Ha megadtad a TCP-t vagy UDP-t, az IP-cím után megadhatod, hogy pontosan melyik Portot szűröd. (Ha nem írsz semmit, az összes portra érvényes lesz). Operátorok:
+
+- `eq 80` (Equal - Pontosan a 80-as port, pl. HTTP).
+- `gt 80` (Greater Than - 80-nál nagyobb, pl. 81, 82...).
+- `lt 80` (Less Than - 80-nál kisebb, pl. 79, 78...).
+- `neq 80` (Not Equal - Bármi más, kivéve a 80-ast).
+- `range 80 100` (80-tól 100-ig tartó tartomány).
+
+**Példa Egy Szabályra:**
+Cél: Megakadályozni, hogy a `192.168.1.0/24` hálózat Pingelni tudja a `10.0.1.0/24` hálózatot.
+
+```text
+Router(config-ext-nacl)# deny icmp 192.168.1.0 0.0.0.255 10.0.1.0 0.0.0.255
+```
+
+(Az `icmp` a ping protokollja, portot nem kell megadni, mert az ICMP-nek nincsenek portjai).
+
+**Példa Másik Szabályra:**
+Cél: Megakadályozni, hogy a `10.0.0.0/16` hálózat letöltsön (HTTPS) a `2.2.2.2`-es szerverről.
+
+```text
+Router(config-ext-nacl)# deny tcp 10.0.0.0 0.0.255.255 host 2.2.2.2 eq 443
+```
+
+(A HTTPS TCP-t használ, és a portszáma 443).
+
+### 3.4. Az ACL Felhelyezése (Ugyanúgy, mint a Standardnél)
+
+```text
+Router(config)# interface g0/1
+Router(config-if)# ip access-group BLOCK_PING in
+```
+
+(Az ellenőrzéshez a `show ip interface` parancsot használhatjuk, ami kiírja, melyik ACL van befelé (Inbound) és kifelé (Outbound) rápattintva a portra).
+
+## Kvíz a 37. Leckéhez (Boson ExSim Bónusz Kérdéssel!)
+
+Ellenőrizd a tudásod az Extended ACL-ek világából!
+
+### Kérdés 1
+
+Az R1 G0/0 interfészén KIFELÉ (Outbound) alkalmazott Extended ACL-t vizsgálsz. Melyik ACL engedi meg **KIZÁRÓLAG** a PC1-nek, hogy elérje a TFTP szervert az SRV1-en? (Feltételek: PC1 IP: `1.1.1.1`, SRV1 IP: `10.1.1.1`)
+
+- A) `10 permit udp host 1.1.1.1 host 10.1.1.1 eq 69` / `20 deny udp any host 10.1.1.1 eq 69` / `30 permit ip any any`
+- B) `10 permit udp host 1.1.1.1 eq 69 host 10.1.1.1` / `20 deny udp any host 10.1.1.1` / `30 permit ip any any`
+- C) `10 permit tcp host 1.1.1.1 host 10.1.1.1 eq 69` / `20 deny tcp any host 10.1.1.1 eq 69` / `30 permit ip any any`
+
+**Helyes Válasz: A**
+
+**Magyarázat:** A TFTP szerver az **UDP** protokollt használja, és a portszáma a **69**-es. Az A válasz pontosan felépített: Az 1. sor beengedi a PC1-et az adott portra. A 2. sor kizár mindenki mást az adott portról. A 3. sor beenged minden más forgalmat. A B azért rossz, mert az `eq 69`-et a Forrás (Kliens) IP-címhez írta, holott a kliensek dinamikus portokat használnak, a 69 a szerver (cél) portja! A C azért rossz, mert TCP-t használ.
+
+### Kérdés 2
+
+Milyen hatása lesz a `no access-list 1 deny 10.0.2.0 0.0.0.255` parancsnak, ha Globális Konfigurációs módból (nem az ACL menüből) adod ki?
+
+- A) A `10.0.2.0/24` hálózat forgalma engedélyezett lesz.
+- B) A teljes 1-es ACL (Access-List 1) véglegesen törlődik a routerről.
+- C) A parancs szintaktikai hibát dob, és elutasításra kerül.
+
+**Helyes Válasz: B**
+
+**Magyarázat:** Ez a Cisco IOS régi betegsége. Számozott ACL-eknél, ha Globális módból kiadod egy ACL bármelyik sora elé a `no` parancsot, a gép kegyetlenül kivágja az egész ACL-t mindenestül. (Ha csak az adott sort akarod törölni, be kell lépni a `ip access-list standard 1` Named-módú menübe, és ott kiadni a sorszám törlését, pl. `no 10`).
+
+### Kérdés 3
+
+Melyik parancs átsorszámozza (Resequence) helyesen a 199-es ACL-t úgy, hogy a legelső szabály az 5-ös sorszámot kapja, majd minden utána következő szabály 10-essel növekedjen (5, 15, 25...)?
+
+- A) `ip access-list 199 resequence 5 10`
+- B) `resequence access-list 199 5 10`
+- C) `ip access-list resequence 199 5 10`
+
+**Helyes Válasz: C**
+
+**Magyarázat:** A szintaxis: `ip access-list resequence <ACL_Szám> <Kezdő_Sorszám> <Inkrementum>`. Azaz `ip access-list resequence 199 5 10`. (Ezt Globális Config módban kell kiadni).
+
+### Kérdés 4
+
+Adott egy 150-es Extended ACL. A feladat, hogy blokkolja a HTTP és HTTPS forgalmat a `192.168.1.0/24` hálózat felől a `10.0.2.0/24` hálózat felé, de minden mást engedjen át. Az ACL jelenleg így néz ki:
+
+```text
+10 permit ip any any
+20 deny udp 192.168.1.0 0.0.0.255 10.0.2.0 0.0.0.255 eq 80
+30 deny udp 192.168.1.0 0.0.0.255 10.0.2.0 0.0.0.255 eq 443
+```
+
+(A router G0/1 portján Inbound lett alkalmazva, ahol a 192.168-as hálózat van).
+
+Milyen **KÉT** dolgot kell kijavítani ahhoz, hogy a szabály jól működjön? (Válassz KETTŐT!)
+
+- A) A `permit ip any any` sort át kell mozgatni a lista VÉGÉRE.
+- B) A protokollt UDP-ről TCP-re kell változtatni a 20-as és 30-as sorban.
+- C) Az ACL-t Inbound helyett Outbound kell alkalmazni a G0/1 porton.
+- D) A portszámokat 88-ra és 404-re kell cserélni.
+
+**Helyes Válasz: A és B**
+
+**Magyarázat:** Az ACL-eket fentről lefelé olvassa a router. Mivel a 10-es sor (A lista legeleje) be lett állítva `permit any any`-nek, az **ÖSSZES** csomag (a tiltott HTTP is) azonnal átmegy, és a 20-as sort már el sem olvassa a gép! A `permit` sornak mindig a végén kell lennie (A). A HTTP (80) és a HTTPS (443) megbízható csatornát igényel, ezért **TCP**-t használnak, nem UDP-t (B). A port irányítása (Inbound a forráshoz közel) tökéletes egy Extended ACL-nél.
+
+### Bónusz Kérdés (Boson ExSim vizsgakérdés - Okos tervezés Wildcard Maszkkal)
+
+Egy zenei kiadó cég konzulense vagy. Két zenei letöltőszerverük van: Music1 (IP: `10.10.10.21`) és Music2 (IP: `10.10.10.22`).
+Kizárólag FTP hozzáférést szabad engedélyezni az Internettől ehhez a két szerverhez. (A `10.10.10.0/24` többi gépéhez semmit, egy kivétellel, amit már megoldottál).
+
+Melyik **EGYETLEN** parancs engedi át a megfelelő forgalmat pontosan erre a **KÉT** szerverre anélkül, hogy a többit beengedné?
+
+- A) `access-list 101 permit tcp any 10.10.10.20 0.0.0.3 eq ftp`
+- B) `access-list 101 permit tcp any 10.10.10.21 0.0.0.2 eq ftp`
+- C) `access-list 101 permit tcp any 10.10.10.20 0.0.0.255 eq ftp`
+- D) `access-list 101 permit tcp any 10.10.10.20 0.0.0.0 eq ftp`
+
+**Helyes Válasz: A**
+
+**Magyarázat:** Itt a **Wildcard maszk** varázslatára van szükség, hogy egyetlen szabállyal megfogjunk két szomszédos IP-címet!
+A cél IP-címek: `.21` (binárisan: `00010101`) és `.22` (binárisan: `00010110`).
+Ha a `.20` báziscímet (binárisan: `00010100`) kombináljuk egy `0.0.0.3`-as (binárisan: `00000011`) wildcard maszkkal, a maszk azt jelenti: "Az utolsó két bit bármi lehet".
+A `.20` és a `0.0.0.3` maszk pontosan a `.20`, `.21`, `.22` és `.23` IP-címeket fogja be! Mivel a `.21` és a `.22` a zenei szerverünk, ez az egyetlen parancs (A) elegánsan megoldja a problémát. A (C) válasz (`0.0.0.255`) a teljes alhálózatot (minden gépet) beengedne FTP-vel, a (D) válasz pedig szigorúan csak a nem létező `.20`-as gépet!
