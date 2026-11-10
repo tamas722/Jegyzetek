@@ -1,0 +1,152 @@
+# CCNA Bővített Jegyzet – 31. Lecke: First Hop Redundancy Protocols (FHRPs) - HSRP, VRRP, GLBP
+
+Ebben a leckében a hálózati végpontok (PC-k, szerverek) legfontosabb "biztonsági hálójával", a First Hop Redundancy (Első ugrás redundancia) protokollokkal ismerkedünk meg. Ha a hálózatodban hiába van két routered az Internet felé, a számítógépek csak egyetlen IP-címet (Default Gateway / Alapértelmezett átjáró) tudnak beállítva tartani. Mi történik, ha ez a router meghal? Az FHRP protokollok (HSRP, VRRP, GLBP) ezt a problémát oldják meg egy **Virtuális IP-cím és Virtuális MAC-cím** segítségével.
+
+> (Vizsgainfó: Az exam topics 3.5-ös pontja csak ezen protokollok céljának ismeretét kéri (describe), a konfigurációjukat hivatalosan nem. Ennek ellenére a HSRP alapkonfigurációjának ismerete erősen ajánlott!).
+
+## 1. A Probléma: A Default Gateway (Alapértelmezett Átjáró) Meghibásodása
+
+Képzelj el egy hálózatot 50 számítógéppel. Mindegyik gép alapértelmezett átjárója az R1 router IP-címe (pl. `172.16.0.254`). A cégnél van egy tartalék router (R2) is.
+
+Ha az R1 hardverhibát szenved, az R2 fizikailag készen áll a forgalom átvételére, DE az 50 számítógép erről semmit sem tud! A gépek továbbra is makacsul az R1 halott IP-címére (és MAC-címére) küldik a kereteket. A hálózat megbénul.
+
+## 2. A Megoldás: Az FHRP Működési Elve
+
+Az FHRP (First Hop Redundancy Protocol) egy gyűjtőfogalom. A megoldás a következő logikára épül:
+
+- **Virtuális IP (VIP):** Az R1 és az R2 közösen, szoftveresen létrehoz egy harmadik, Virtuális IP-címet (pl. `172.16.0.252`). A PC-k default gateway-ének ezt a virtuális címet állítjuk be!
+- **Virtuális MAC:** Ehhez az IP-hez a protokoll generál egy speciális Virtuális MAC-címet is.
+- **Szerepkörök (Active / Standby):** A routerek Hello üzeneteket küldözgetnek egymásnak (Multicast). Megbeszélik, hogy az R1 lesz a "Főnök" (Active), az R2 pedig a "Tartalék" (Standby).
+- **Az ARP Kérés:** Amikor a PC el akar érni valamit, küld egy ARP Request-et a virtuális IP-re. Csak a Főnök (Active) router válaszol a virtuális MAC-címmel! A forgalom az R1-en megy át.
+- **A Meghibásodás (Failover):** Ha az R1 meghal, a Hello üzenetek elmaradnak. Az R2 (Standby) észreveszi ezt, és azonnal átveszi az Active (Főnök) szerepet, beleértve a virtuális IP és MAC-címet is!
+- **A Gratuitous ARP trükk:** Hogy a hálózatban lévő switchek megtudják, hogy a virtuális MAC-cím most már az R2-es porton van (és ne küldjék az adatot a halott R1 felé), az R2 egy kéretlen (kérés nélküli), Broadcast-ként szórt ARP üzenetet (Gratuitous ARP) küld a hálózatba. A switchek frissítik a MAC-táblájukat, és a PC-k észre sem veszik, hogy routert cseréltek alattuk!
+
+> (Non-preemptive szabály: Akárcsak az OSPF DR/BDR esetében, ha az eredeti R1 feléled, NEM veszi vissza automatikusan a Főnök szerepet, hanem beáll Tartaléknak. Ezt a `preempt` paranccsal lehet felülbírálni).
+
+## 3. A Három Nagy FHRP Protokoll Összehasonlítása (KRITIKUS VIZSGAANYAG!)
+
+A CCNA vizsgán a legfontosabb, hogy fejből tudd a három protokoll alapvető különbségeit, a használt kifejezéseiket, és ami a legfontosabb: a Multicast címeiket és a Virtuális MAC-címeiket!
+
+| Tulajdonság | HSRP (Hot Standby Router Protocol) | VRRP (Virtual Router Redundancy Protocol) | GLBP (Gateway Load Balancing Protocol) |
+|---|---|---|---|
+| **Szabvány (Készítő)** | Cisco Proprietary (Saját) | Nyílt Iparági Szabvány (IEEE) | Cisco Proprietary (Saját) |
+| **Fő funkció** | Redundancia | Redundancia | Redundancia **ÉS** Terheléselosztás egyazon alhálózaton belül! |
+| **Szerepkör Nevek** | Active / Standby | Master / Backup | AVG (Active Virtual Gateway) / AVF (Active Virtual Forwarder) |
+| **IPv4 Multicast Cím** | v1: `224.0.0.2`<br>v2: `224.0.0.102` | `224.0.0.18` | `224.0.0.102` (Mint a HSRPv2) |
+| **Virtuális MAC-cím formátuma** | v1: `0000.0c07.acXX`<br>v2: `0000.0c9f.fXXX`<br>(Az X = A Csoport száma HEXÁBAN!) | `0000.5e00.01XX`<br>(Az X = A Csoport száma HEXÁBAN!) | `0007.b400.XXYY`<br>(X=Csoport, Y=AVF sorszám) |
+
+> (Hexa számítás emlékeztető a vizsgára: A 10-es csoportszám hexában `0a`, a 200-as csoportszám hexában `c8`).
+
+### Egy kis extra a GLBP-ről
+
+Míg a HSRP és a VRRP esetében csak akkor van Load Balancing (Terheléselosztás), ha több VLAN-t használsz és felváltva teszed a routereket Active/Standby szerepbe, addig a GLBP ezt **egyetlen alhálózaton belül is megcsinálja!** Az AVG (a "Főnök" router) a beérkező ARP kérésekre trükkösen válaszol: a PC1-nek a Router1 MAC-címét adja, a PC2-nek a Router2 MAC-címét, így a gépek forgalma automatikusan eloszlik a két router között!
+
+## 4. HSRP Alapkonfiguráció (Cisco IOS)
+
+Nézzük meg, hogyan kell beállítani a leggyakoribb HSRP-t a Cisco routereken! A konfiguráció mindig azokon a fizikai interfészeken (pl. `g0/0`) történik, amelyek az adott LAN (a PC-k) felé néznek.
+
+### Alapvető beállítások (R1 router)
+
+```text
+Router(config)# interface g0/0
+Router(config-if)# standby version 2
+Router(config-if)# standby 1 ip 172.16.0.254
+Router(config-if)# standby 1 priority 200
+Router(config-if)# standby 1 preempt
+```
+
+**Magyarázat:**
+
+- `standby version 2`: Kötelező! A v1 és a v2 nem kompatibilis egymással.
+- `standby 1 ip ...`: Az `1`-es a HSRP Csoport (Group) száma. (Érdemes a VLAN számához igazítani a rend kedvéért, de a lényeg, hogy a két routeren egyeznie kell!). Ez a parancs állítja be a Virtuális IP-címet.
+- `priority 200`: Ez dönti el, ki lesz az Active router. Az alapértelmezett prioritás **100**. A legmagasabb nyer. (Döntetlen esetén a legmagasabb IP-című interfész nyer).
+- `preempt`: A "Kisajátítás" engedélyezése. Ha az R1 újraindul és visszatér, ezzel a paranccsal erőszakkal visszaveszi az Active szerepet a gyengébb prioritású R2-től. (Ezt elég arra a routerre rátenni, amit mindenképp Active-nak szeretnél).
+
+### Ellenőrzés
+
+- `show standby`: Részletes információk a csoportról, státusz (Active/Standby), Virtuális IP és MAC, Timerek, Preemption státusz, és a másik (Standby) router IP-címe.
+
+## Kvíz a 31. Leckéhez (Boson ExSim Bónusz Kérdéssel!)
+
+Ellenőrizd a tudásod a HSRP, VRRP és GLBP apróbetűs részleteiről!
+
+### Kérdés 1
+
+Az alábbi MAC-címek közül melyik egy érvényes **HSRP Version 1** virtuális MAC-cím?
+
+- A) `0000.0c9f.f0ab`
+- B) `0000.1234.5678`
+- C) `0000.0c9f.f171`
+- D) `0000.0c07.acab`
+
+**Helyes Válasz: D**
+
+**Magyarázat:** A HSRPv1 formátuma kötelezően `0000.0c07.acXX`. A D opció tökéletesen illeszkedik ebbe (a csoportszám az `ab`, ami hexadecimális). Az A és a C a HSRPv2-es (`0c9f`) címek.
+
+### Kérdés 2
+
+Melyik egy érvényes **VRRP** virtuális MAC-cím az alábbiak közül?
+
+- A) `0000.5e00.010a`
+- B) `0007.b400.010a`
+- C) `0000.0c9f.f01a`
+- D) `0000.0c07.ac0a`
+
+**Helyes Válasz: A**
+
+**Magyarázat:** A VRRP szabványosított MAC-cím formátuma a `0000.5e00.01XX`. A megadott cím a VRRP 10-es csoportjának (hexa: `0a`) a címe. A B a GLBP, a C a HSRPv2, a D a HSRPv1 címe. Ezt a táblázatot a vizsgára álmádból is tudni kell!
+
+### Kérdés 3
+
+Az alábbiak közül melyek érvényes, a **VRRP** protokoll által használt router szerepkör nevek? (Válassz KETTŐT!)
+
+- A) Active
+- B) Backup
+- C) Active Virtual Gateway
+- D) Master
+- E) Standby
+- F) Active Virtual Forwarder
+
+**Helyes Válasz: B és D**
+
+**Magyarázat:** A VRRP (mivel nyílt szabvány, nem a Ciscoé) a **Master / Backup** terminológiát használja. Az Active/Standby a HSRP, a Gateway/Forwarder a GLBP sajátja.
+
+### Kérdés 4
+
+Amikor a HSRP Standby (Tartalék) router hirtelen előlép Active (Főnök) routerré a hiba miatt, milyen üzenetet küld ki a hálózatba, hogy frissítse a switchek MAC-tábláit? Válaszd a legjobb választ!
+
+- A) HSRP Hello messages
+- B) Gratuitous ARP messages
+- C) ARP Request messages
+- D) ARP Reply messages
+
+**Helyes Válasz: B**
+
+**Magyarázat:** Bár a routerek folyamatosan küldik a Hello üzeneteket, a switchek MAC táblájának frissítése (hogy a Virtuális MAC immár a másik porton van) a **Gratuitous ARP** (Kéretlen, Broadcastként küldött ARP válasz) feladata. Bár ez technikailag egy ARP Reply (D), a B opció sokkal specifikusabb és szakmaibb, a Cisco vizsgán mindig a "legjobb" választ kell megjelölni.
+
+### Kérdés 5
+
+Melyik állítás írja le a legpontosabban a HSRP (Hot Standby Router Protocol) alapvető funkcióját? Válaszd a legjobb választ!
+
+- A) Lehetővé teszi, hogy minden egyes hálózati végponton (PC-n) más-más alapértelmezett átjáró (default gateway) címet konfiguráljunk.
+- B) Lehetővé teszi, hogy több router megossza a hálózati terhelést (Load-balance) egyetlen alhálózaton belüli hostok között.
+- C) Redundáns alapértelmezett átjáró (default gateway) címet biztosít egy alhálózat (subnet) gépei számára.
+- D) Minden egyes router számára egy egyedi Virtuális IP-t és Virtuális MAC-címet választ.
+
+**Helyes Válasz: C**
+
+**Magyarázat:** A HSRP fő feladata a hibatűrés (redundancia). A gépeken egyetlen virtuális IP-címet állítunk be átjáróként, amit a routerek közösen osztanak meg. A B azért hibás, mert a HSRP egyetlen alhálózaton belül NEM tud terheléselosztást csinálni (Arra a GLBP való). A D azért hibás, mert nem egyedi a címük, pont hogy közösen használnak egyet.
+
+### Bónusz Kérdés (Boson ExSim vizsgakérdés - Trükkös HSRP Tulajdonságok)
+
+Az alábbi állítások közül melyik **KETTŐ igaz** a HSRP-vel (Hot Standby Router Protocol) kapcsolatban? (Válassz KETTŐT!)
+
+- A) Egy routert választanak meg Master routernek, és az összes többi router Backup állapotba kerül.
+- B) Egy HSRP csoporton belül csak egy Virtuális IP-cím van használatban, de több Virtuális MAC-cím is használatos.
+- C) Egy routert választanak meg Active routernek, és egy másik routert Standby routernek.
+- D) Egy HSRP csoporton belül csak egyetlen Virtuális IP-cím és egyetlen Virtuális MAC-cím van használatban.
+- E) Egy HSRP csoporton belül az összes router részt vehet a hálózati forgalom továbbításában (Load-balancing).
+
+**Helyes Válasz: C és D**
+
+**Magyarázat:** Az A hamis (Master/Backup a VRRP nyelvezete). A B hamis (Csak 1 MAC cím van csoportonként). Az E hamis (A forgalom megosztása egy csoporton belül a GLBP képessége). Így csak a C (Active/Standby felállás) és a D (Egy csoport = Egy közös VIP és VMAC) állítások igazak a HSRP-re.
