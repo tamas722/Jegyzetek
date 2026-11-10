@@ -1,0 +1,191 @@
+# CCNA Bővített Jegyzet – 10. Lecke: Az IPv4 Fejléc (Header) és Csomagszerkezet
+
+Ebben a leckében szünetet tartunk az IP-címek számolásában, és megnézzük magát az Internet Protocol 4-es verzióját (IPv4) "mikroszkóp alatt". A Layer 3-on (Hálózati réteg) ez a protokoll felel azért, hogy az adatok a különálló hálózatok között is célba érjenek, akár a világ másik felére az Interneten keresztül. Ezt a folyamatot hívjuk **útválasztásnak (routing)**.
+
+## 1. Ismétlés: A PDU-k és az Adatbecsomagolás
+
+Mielőtt megnézzük az IPv4 fejlécet, ismételjük át, hol helyezkedik el ez a teljes hálózati keretben! Ahogy az adat fentről lefelé halad az OSI modellen:
+
+- A felső rétegek előkészítik a nyers **Adatot (Data)**.
+- A **Layer 4 (Szállítási réteg)** hozzáadja a saját fejlécét (általában TCP vagy UDP protokollal). Ezt hívjuk **Szegmensnek (Segment)**.
+- A **Layer 3 (Hálózati réteg)** hozzáadja a saját, jelen esetben IPv4 fejlécét. Az adat + L4 fejléc + L3 fejléc együttesét **Csomagnak (Packet)** nevezzük. Ebben a leckében erre az L3-as fejlécre fókuszálunk.
+- Végül a **Layer 2 (Adatkapcsolati réteg)** hozzáteszi a saját fejlécét és utótagját, így lesz belőle **Keret (Frame)**.
+
+> **Megjegyzés a terminológiához:** Mivel a Layer 3-mal foglalkozunk, innentől kezdve a hálózaton utazó üzeneteket "keretek" helyett a Layer 3-as **"csomag" (packet)** néven fogjuk emlegetni.
+
+## 2. Az IPv4 Fejléc (Header) Mezői
+
+Az IPv4 fejléc sokkal bonyolultabb, mint a korábban tanult egyszerű Ethernet fejléc. A gépek (routerek) ezt a fejlécet balról jobbra, fentről lefelé olvassák. Nem feltétlenül kell kívülről fújnod a vizsgára minden egyes bitjét, de nagyon fontos, hogy értsd, melyik mező mire szolgál!
+
+### 1. Version (Verzió) – 4 bit
+
+Ez mutatja meg, melyik IP verziót használjuk. IPv4 esetén ennek az értéke mindig **4** (binárisan: `0100`). Ha IPv6-ot használnánk, az érték 6 lenne (`0110`), és az egész fejléc felépítése megváltozna. (Érdekesség: Mi történt az IPv5-tel? Ez egy "Internet Stream Protocol" nevű kísérleti projekt volt, ami sosem került nyilvános bevezetésre).
+
+### 2. IHL (Internet Header Length - Fejléc hossza) – 4 bit
+
+Mivel a fejléc legutolsó mezője (az Options) változó hosszúságú, a routernek tudnia kell, hol ér véget a fejléc, és hol kezdődik a tényleges adat.
+
+**Fontos szabály:** Ez a mező a hosszúságot **4 bájtos egységekben** adja meg!
+
+- **Minimum érték:** 5. (5 x 4 bájt = **20 bájt**). Ez az alap, üres opciók nélküli IPv4 fejléc hossza.
+- **Maximum érték:** 15. (15 x 4 bájt = **60 bájt**). Ez a létező legnagyobb IPv4 fejléc, amiben az opciók mező 40 bájtot foglal el.
+
+### 3. DSCP (Differentiated Services Code Point) – 6 bit
+
+Ezt a mezőt a **QoS (Quality of Service - Szolgáltatásminőség)** használja. Célja a hálózati forgalom priorizálása. Ha lassú a net és később tölt be egy weboldal, az nem tragédia. De ha egy Skype vagy Zoom hívás közben akad meg a videó vagy a hang, az tönkreteszi a beszélgetést. A DSCP mező jelzi a routereknek, hogy a késleltetésre érzékeny adatoknak (hang/videó) elsőbbséget kell adni a forgalomban.
+
+### 4. ECN (Explicit Congestion Notification) – 2 bit
+
+Normál esetben, ha egy router túlterhelt (torlódás van), elkezdi eldobálni a csomagokat. Az ECN egy okos jelzés: lehetővé teszi, hogy a végpontok értesüljenek a hálózati torlódásról anélkül, hogy csomagokat kellene eldobni. (Ehhez mindkét gépnek és az útvonalon lévő routereknek is támogatniuk kell ezt a funkciót).
+
+### 5. Total Length (Teljes hossz) – 16 bit (2 bájt)
+
+Ez mutatja meg a teljes Layer 3 csomag (az IPv4 fejléc + a beágyazott hasznos adat) hosszát.
+
+**Fontos különbség:** Szemben az IHL mezővel, ez nem szorzókat, hanem a pontos **bájtokat** jelzi!
+
+- **Minimum:** 20 (azaz 20 bájt, ami egy üres IPv4 fejléc adat nélkül).
+- **Maximum:** 65 535 bájt (mivel a 16 bináris bit maximális értéke csupa 1-es esetén 65 535).
+
+### 6. Identification (Azonosító) – 16 bit
+
+Ha egy csomag túl nagy, a hálózat darabokra (fragmensekre) vágja. Hogy a fogadó gép a végén újra össze tudja rakni az eredeti csomagot, minden egyes darabkája ugyanazt az **Azonosító** számot kapja meg ebben a mezőben.
+
+### 7. Flags (Jelzők) – 3 bit
+
+Ez a három kapcsoló a csomagok darabolását (fragmentációját) irányítja:
+
+- **Bit 0:** Fenntartva (Reserved). Mindig 0.
+- **Bit 1 (DF - Don't Fragment):** "Ne darabold!" Ha ez 1-esre van állítva, a routernek tilos feldarabolnia a csomagot.
+- **Bit 2 (MF - More Fragments):** "Van még darab!" Ha ez 1-es, az azt jelenti, hogy ez a csomag egy nagyobb üzenet darabja, és jön még utána több is. Az eredeti üzenet legutolsó darabkájánál ez 0-ra vált.
+
+### 8. Fragment Offset (Töredék eltolás) – 13 bit
+
+Ha a csomagot feldarabolták, ez a mező mondja meg a fogadó gépnek, hogy ez a konkrét darabka milyen sorrendben (hol) helyezkedik el az eredeti csomagon belül. Ennek hála a csomag akkor is tökéletesen összerakható, ha a darabok nem sorrendben érkeznek meg.
+
+### 9. TTL (Time To Live - Élettartam) – 8 bit
+
+Ez egy "önmegsemmisítő" visszaszámláló a végtelen hurkok (infinite loops) megelőzésére. Ha egy hálózat rosszul van beállítva, egy csomag a végtelenségig keringhetne a routerek között, ami végül leállítaná a hálózatot. Ezt úgy előzik meg, hogy minden egyes router, amin áthalad a csomag, **levon 1-et** ebből az értékből. Ha a TTL eléri a 0-t, a router azonnal eldobja a csomagot. (A jelenlegi ajánlott alapértelmezett TTL érték a 64).
+
+### 10. Protocol (Protokoll) – 8 bit
+
+Ez mutatja meg, milyen Layer 4 (vagy egyéb) csomag van beágyazva az IPv4 fejléc mögé. Amit érdemes a vizsgára megjegyezni:
+
+- **1:** ICMP (Ezt használja a Ping).
+- **6:** TCP.
+- **17:** UDP.
+- **89:** OSPF (Ez egy dinamikus routing protokoll, amiről később részletesen tanulunk).
+
+### 11. Header Checksum (Fejléc ellenőrzőösszeg) – 16 bit
+
+Egy matematikai számítás, ami **kizárólag az IPv4 fejléc hibátlanságát** ellenőrzi. Ha egy router megkapja a csomagot, újraszámolja ezt az értéket. Ha nem egyezik a mezőben lévővel, a csomag útközben megsérült, ezért a router eldobja. (Figyelem: Ez a mögötte lévő adatokat **NEM** ellenőrzi, azt majd a TCP/UDP intézi el magának!)
+
+### 12-13. Source (Forrás) és Destination (Cél) IP-cím – 32-32 bit
+
+Ezeket már ismerjük. A feladó és a célállomás 32 bites IP címei.
+
+### 14. Options (Opciók) – 0-tól 320 bitig (Max 40 bájt)
+
+Ritkán használt mező egyedi hálózati utasításoknak. Ha az IHL mező értéke nagyobb, mint 5, akkor tudjuk, hogy vannak a csomagban Opciók. A CCNA vizsgán ezek részleteivel nem kell foglalkozni.
+
+## 3. Gyakorlat és Hálózati Elemzés (Wireshark)
+
+A videóban Jeremy a **Wireshark** nevű hálózati forgalomelemző programmal (Packet Capture) mutatott be valós példákat a csomagok darabolására.
+
+Emlékezzünk az **MTU (Maximum Transmission Unit)** fogalmára: ez az a maximális adatmennyiség (hasznos teher), amit egy Ethernet keret egyszerre el tud vinni. Ez alapértelmezetten **1500 bájt**.
+
+A Cisco CLI-ből a normál `ping` parancs 100 bájtos csomagokat küld, így azok egyben átmennek.
+
+### Példa 1: Óriási csomag küldése és a Fragmentáció
+
+Megkérjük a routert, hogy küldjön egy hatalmas, 10 000 bájtos pinget. Mivel az MTU csak 1500 bájt, a router darabokra fogja vágni (fragmentálni) a csomagot.
+
+```text
+Router# ping 192.168.1.2 size 10000
+```
+
+**Mi látszik ebből a Wiresharkban?**
+
+- Rengeteg IPv4 csomagtöredéket látunk. Mindegyik fejlécében a **Total Length** 1500 bájt lesz.
+- Mindegyiknek ugyanaz lesz az **Identification (Azonosító)** száma, jelezve, hogy egy családba tartoznak.
+- Az első darabkákon a **More Fragments (MF)** bit 1-es lesz, míg a legutolsónál 0.
+- A **Fragment Offset (Eltolás)** értéke mindegyiknél más lesz (az elsőnél 0), mutatva a darabka helyét.
+
+### Példa 2: A "Don't Fragment" (Ne darabold) bit bekapcsolása
+
+Küldjünk megint egy nagy csomagot, de utasítsuk a routert a `df-bit` kapcsolóval, hogy tilos feldarabolnia!
+
+```text
+Router# ping 192.168.1.2 size 10000 df-bit
+```
+
+**Eredmény:** A ping kudarcot vall (fail). A csomag túl nagy ahhoz, hogy átmenjen (10 000 > az 1500-as MTU), de a DF bit miatt a hálózat nem vághatja darabokra, ezért kénytelen eldobni.
+
+## Kvíz a 10. Leckéhez
+
+A megszokott formátumban következzen az 5 kérdéses kvíz, a válaszlehetőségekkel és a részletes, logikus magyarázatokkal!
+
+### Kérdés 1
+
+Mi az IPv4 fejléc első mezőjének (Version) fix bináris értéke?
+
+- A) 0010
+- B) 0110
+- C) 0001
+- D) 0100
+
+**Helyes Válasz: D**
+
+**Magyarázat:** Az IPv4 fejléc első 4 bitje a verziót jelöli, ami a 4-es verziónál (IPv4) mindig decimális 4. Ennek a bináris megfelelője a `0100` (azaz 0 nyolcas, 1 négyes, 0 kettes, 0 egyes). A B opció (`0110` azaz 6) az IPv6 fejlécre lenne igaz.
+
+### Kérdés 2
+
+Melyik mező okozza a csomag eldobását a router által, ha az értéke eléri a 0-t?
+
+- A) TTL (Time To Live)
+- B) DSCP (Differentiated Services Code Point)
+- C) IHL (Internet Header Length)
+- D) ECN (Explicit Congestion Notification)
+
+**Helyes Válasz: A**
+
+**Magyarázat:** A TTL (Élettartam) egy biztonsági visszaszámláló a végtelen hurkok (végtelenül pattogó csomagok) elkerülésére. Minden router levon belőle 1-et, és ha eléri a nullát, a csomag "lejár" és a hálózat eldobja.
+
+### Kérdés 3
+
+Hogyan derül fény a hibákra az IPv4 csomagba ágyazott hasznos adatok (payload) esetében?
+
+- A) Az IPv4 fejléc Header Checksum (Fejléc ellenőrzőösszeg) mezője ellenőrzi a hibákat.
+- B) A beágyazott protokoll (például a TCP vagy az UDP) végzi el a hibák ellenőrzését.
+- C) A beágyazott adatokban lévő hibákat nem lehet észlelni.
+- D) Az ECN mező jelzi az adatsérülést.
+
+**Helyes Válasz: B**
+
+**Magyarázat:** Az IPv4 Header Checksum mezője – ahogy a neve is mutatja – kizárólag a fejléc épségét ellenőrzi. Ha az L3-as fejléc rendben van, a benne szállított adatok (pl. TCP szegmens) sértetlenségéért már maga az adatot szállító Layer 4-es protokoll (TCP/UDP) saját ellenőrzőösszege felel.
+
+### Kérdés 4
+
+Az IPv4 fejléc melyik mezőjének változhat (nem fix) a hosszúsága?
+
+- A) Options (Opciók)
+- B) Header Checksum (Fejléc ellenőrzőösszeg)
+- C) Total Length (Teljes hossz)
+- D) IHL (Internet Header Length)
+
+**Helyes Válasz: A**
+
+**Magyarázat:** Az Options mező hossza 0 bit-től egészen 320 bitig (40 bájtig) terjedhet, attól függően, hogy használnak-e egyedi opciókat. Az összes többi mező hossza kőbe van vésve (pl. a Total Length és az IHL értékei persze változnak, de maguk a mezők fizikailag mindig pontosan 16, illetve 4 bit helyet foglalnak el a fejlécben).
+
+### Kérdés 5
+
+Melyik bit lesz 1-esre állítva egy feldarabolt IPv4 csomag összes töredékén, kivéve a legutolsót?
+
+- A) Fragment offset (Töredék eltolás) bit
+- B) More fragments (Több töredék) bit
+- C) Don't fragment (Ne darabold) bit
+- D) Packet fragment (Csomag töredék) bit
+
+**Helyes Válasz: B**
+
+**Magyarázat:** A More Fragments (MF) bit jelzi a fogadó gépnek, hogy "várj még, ezután a darabka után jön egy következő is". Amikor az eredeti üzenet legutolsó darabkája érkezik meg, azon ezt a bitet 0-ra állítják, így a gép tudja, hogy megkapott mindent, és elkezdheti az összerakást. Az A opció eleve hamis (az offset nem egy bit, hanem egy 13 bites mező), a D pedig kitalált fogalom.
