@@ -1,0 +1,188 @@
+# CCNA Bővített Jegyzet – 8. Lecke: IPv4 Címzés 2. Rész és Router Konfiguráció
+
+Ebben a leckében folytatjuk az IPv4 címekkel kapcsolatos ismeretek elmélyítését. Megtanuljuk, hogyan számolhatjuk ki pontosan egy adott hálózat paramétereit (első és utolsó kiosztható címek, maximális gépszám), majd végre belevágunk a gyakorlatba: beállítjuk az első IP-címeinket egy Cisco routeren a parancssoron (CLI) keresztül!
+
+## 1. Az IPv4 Hálózati Osztályok (Classes) Pontosítása
+
+Az előző leckében átvettük a hálózati osztályokat (A, B, C, stb.). Most pontosítunk egy fontos részletet a Class A osztály kapcsán:
+
+Bár technikailag a Class A tartomány 0-tól 127-ig tart (az első oktett alapján), emlékezzünk arra, hogy a **127-es tartomány a Loopback (helyi teszt) címek** számára van lefoglalva.
+
+Emellett a **0-val kezdődő hálózat** is egy speciális, lefoglalt tartomány.
+
+Ezért a gyakorlatban: Bár a vizsgán a 0-127 a hivatalos definíció, a ténylegesen kiosztható, használható (**usable**) Class A hálózatok tartománya **1-től 126-ig** tart.
+
+## 2. Hálózati Matek: Kiosztható címek és a gépek (Hostok) száma
+
+Minden IP-cím egy **Hálózat (Network)** és egy **Gép (Host)** részre van osztva. Azt, hogy mekkora a Host rész, a prefix (pl. `/24`) határozza meg. Ebből a Host részből tudjuk kiszámolni, hogy pontosan hány eszközt (PC-t, routert, szervert) köthetünk rá az adott hálózatra.
+
+A képlet a maximális hostok számának kiszámítására:
+
+$$
+2^N - 2
+$$
+
+(Ahol az **N** a Host rész bitjeinek száma.)
+
+**Miért kell kivonni 2-t?**
+
+Mert a hálózat legalacsonyabb és legmagasabb címe le van foglalva, ezek soha nem adhatók ki számítógépnek:
+
+- **Network Address (Hálózat cím / Network ID):** Ahol a Host rész csupa 0. (Ez azonosítja magát a hálózatot).
+- **Broadcast Address (Üzennetszóró cím):** Ahol a Host rész csupa 1. (Ezzel küldünk üzenetet mindenkinek a hálózaton).
+
+Ebből logikusan következik, hogy a gépeknek kiadható címek (**Usable addresses**) mindig a Hálózat cím és a Broadcast cím közé esnek:
+
+- **Első kiosztható cím (First usable address):** A Hálózat cím + 1.
+- **Utolsó kiosztható cím (Last usable address):** A Broadcast cím - 1.
+
+### Példák a gyakorlatban
+
+#### 1. Példa: Class C hálózat (192.168.1.0/24)
+
+A `/24` miatt az utolsó 8 bit a Host rész ($32 - 24 = 8$).
+
+- Maximális hostok száma: $2^8 - 2 = 256 - 2 =$ **254 darab gép**.
+- Hálózat cím: `192.168.1.0` (A legelső).
+- Első kiosztható cím: `192.168.1.1` (Hálózat + 1).
+- Utolsó kiosztható cím: `192.168.1.254` (Broadcast - 1).
+- Broadcast cím: `192.168.1.255` (A legutolsó).
+
+#### 2. Példa: Class B hálózat (172.16.0.0/16)
+
+A `/16` miatt az utolsó 16 bit a Host rész.
+
+- Maximális hostok száma: $2^{16} - 2 =$ **65 534 darab gép**.
+- Hálózat cím: `172.16.0.0`
+- Első kiosztható cím: `172.16.0.1`
+- Utolsó kiosztható cím: `172.16.255.254`
+- Broadcast cím: `172.16.255.255`
+
+#### 3. Példa: Class A hálózat (10.0.0.0/8)
+
+A `/8` miatt az utolsó 24 bit a Host rész.
+
+- Maximális hostok száma: $2^{24} - 2 =$ **16 777 214 darab gép**.
+- Hálózat cím: `10.0.0.0`
+- Első kiosztható cím: `10.0.0.1`
+- Utolsó kiosztható cím: `10.255.255.254`
+- Broadcast cím: `10.255.255.255`
+
+## 3. Gyakorlat: IP-címek konfigurálása Cisco Routeren
+
+(A példában a routerünk (R1) három interfészére csatlakoztatunk egy-egy hálózatot. A router minden interfésze az adott hálózat utolsó kiosztható címét fogja megkapni).
+
+### A `show ip interface brief` parancs
+
+Ez az egyik leghasznosabb és leggyakrabban használt parancs. Privileged EXEC módból indítjuk, és kilistázza a router összes portjának alapvető állapotát.
+
+```text
+Router# show ip interface brief
+```
+
+A megjelenő oszlopok jelentése:
+
+- **Interface:** A port neve (pl. `GigabitEthernet0/0`).
+- **IP-Address:** A porthoz rendelt IP-cím (alapból `unassigned`, azaz nincs kiadva).
+- **OK?:** Régi funkció, a modern rendszereken mindig `YES`-t mutat.
+- **Method (Módszer):** Hogyan kapta az IP-címet (pl. `manual` = te írtad be, `unset` = nincs).
+- **Status (Állapot):** Ez a **Layer 1 (Fizikai réteg)** állapota. Be van-e dugva a kábel? Bekapcsolták-e a portot?
+  - **Nagyon fontos szabály:** A Cisco switcheken a portok alapból be vannak kapcsolva. De a **Cisco routereken biztonsági okokból minden port alapértelmezetten `administratively down`** (adminisztratívan, azaz szándékosan lekapcsolt) állapotban van! Nekünk kell majd bekapcsolni őket.
+- **Protocol (Protokoll):** Ez a **Layer 2 (Adatkapcsolati réteg)** állapota. Jól működik-e a kommunikáció? (Ha a fizikai Status `down`, a Protocol is mindig `down` lesz. Olyan nincs, hogy a kábel ki van húzva, de a szoftver tud rajta kommunikálni).
+
+### Hogyan adjunk IP-címet egy interfésznek? (A folyamat)
+
+Lépjünk be a Globális konfigurációs módba (`conf t`), majd válasszuk ki az interfészt. Ezt megtehetjük a teljes névvel, vagy rövidítésekkel (pl. `int g0/0`).
+
+```text
+Router# configure terminal
+Router(config)# interface gigabitethernet 0/0
+```
+
+Most kiadjuk a címet. Ne feledjük, a Cisco IOS ide **nem** a `/8` formátumot várja, hanem a Subnet maszkot pontozott decimális formában (Class A esetén ez `255.0.0.0`)!
+
+```text
+Router(config-if)# ip address 10.255.255.254 255.0.0.0
+```
+
+Végül bekapcsoljuk (felébresztjük) az interfészt a `no shutdown` (röviden: `no shut`) paranccsal, ami törli a gyári kikapcsolt állapotot.
+
+```text
+Router(config-if)# no shutdown
+```
+
+Amint ezt beírod, a rendszer kiír egy üzenetet, hogy a port fizikai állapota (`Status`) és a protokoll állapota (`Protocol`) is átváltott `UP`-ra (feléledt).
+
+### További hasznos "Show" parancsok
+
+#### 1. A `show interfaces` parancs
+
+Ez rengeteg technikai részletet mutat a fizikai (L1) és adatkapcsolati (L2) rétegről. Érdemes mindig egy konkrét interfészre rászűrni.
+
+```text
+Router# show interfaces g0/0
+```
+
+**Mit látsz benne?** A port sebességét (pl. 1Gbps), állapotát (UP/UP), a beállított IP-címet, és ami a legfontosabb: a **BIA (Burned In Address)**-t. Ez mutatja meg a port gyári MAC-címét.
+
+#### 2. A `show interfaces description` parancs
+
+A nagy hálózatokban könnyű eltévedni, ezért a router portjaihoz leírásokat (**Description**) lehet fűzni.
+
+A beállítása konfigurációs módból (pl. jelezzük, hogy ez a port az 1-es Switchhez megy):
+
+```text
+Router(config-if)# description ### Connected to SW1 ###
+```
+
+Ezután a `show interfaces description` paranccsal listázhatod ki, hogy melyik port hova vezet, ami óriási segítség a hibakeresésnél.
+
+## 4. Kvíz: IP-címzámítási Gyakorlat
+
+Ebben a kvízben öt IP-címet kapsz a hozzájuk tartozó prefix hosszal (pl. `/8`). Számold ki mind az öt kérdésnél az alábbi 5 értéket:
+
+1. Hálózat cím (Network address)
+2. Maximális kiosztható gépek száma (Max hosts)
+3. Broadcast cím
+4. Első kiosztható cím (First usable)
+5. Utolsó kiosztható cím (Last usable)
+
+### Kérdés 1: PC1 IP-címe `43.109.23.12/8`. Keresd meg a fenti 5 értéket!
+
+- **Hálózat cím:** `43.0.0.0` (A `/8` miatt csak az 1. oktett a hálózat, a többi csupa 0).
+- **Max hosts:** 16 777 214 ($2^{24} - 2$).
+- **Broadcast cím:** `43.255.255.255` (A hálózat fix, a host rész csupa 1-es, azaz 255).
+- **Első kiosztható cím:** `43.0.0.1` (Hálózat + 1).
+- **Utolsó kiosztható cím:** `43.255.255.254` (Broadcast - 1).
+
+### Kérdés 2: PC4 IP-címe `129.221.23.13/16`. Keresd meg a fenti 5 értéket!
+
+- **Hálózat cím:** `129.221.0.0` (A `/16` miatt az első két oktett a hálózat, a többi 0).
+- **Max hosts:** 65 534 ($2^{16} - 2$).
+- **Broadcast cím:** `129.221.255.255` (Host rész csupa 1-es, azaz 255).
+- **Első kiosztható cím:** `129.221.0.1`
+- **Utolsó kiosztható cím:** `129.221.255.254`
+
+### Kérdés 3: PC8 IP-címe `209.211.3.22/24`. Keresd meg a fenti 5 értéket!
+
+- **Hálózat cím:** `209.211.3.0` (A `/24` miatt az első 3 oktett a hálózat).
+- **Max hosts:** 254 ($2^8 - 2$).
+- **Broadcast cím:** `209.211.3.255`
+- **Első kiosztható cím:** `209.211.3.1`
+- **Utolsó kiosztható cím:** `209.211.3.254`
+
+### Kérdés 4: PC5 IP-címe `2.71.209.233/8`. Keresd meg a fenti 5 értéket!
+
+- **Hálózat cím:** `2.0.0.0`
+- **Max hosts:** 16 777 214
+- **Broadcast cím:** `2.255.255.255`
+- **Első kiosztható cím:** `2.0.0.1`
+- **Utolsó kiosztható cím:** `2.255.255.254`
+
+### Kérdés 5: PC6 IP-címe `155.200.201.141/16`. Keresd meg a fenti 5 értéket!
+
+- **Hálózat cím:** `155.200.0.0`
+- **Max hosts:** 65 534
+- **Broadcast cím:** `155.200.255.255`
+- **Első kiosztható cím:** `155.200.0.1`
+- **Utolsó kiosztható cím:** `155.200.255.254`
